@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en-us"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Password Reset</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon"/> 
+        <link href="../resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="../resources/css/myStyle.css" rel="stylesheet"/>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"/>        
+        <link href='http://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'/>  
+        <link href="../resources/css/scrolling-nav.css" rel="stylesheet"/>
+        <script>
+            $( document ).ready(function() {
+                var freq="#{adminBean.freq}";
+                document.getElementById("adminPan:userW_input").value=freq;
+            });
+        </script>
+    </h:head>
+    <h:body id="body">
+        
+        <p:fragment rendered="#{userBean.admin}">
+            <div class="row">
+                    <header class="navbar navbar-static-top bs-docs-nav blackTransparency1" id="top" role="banner">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a href="index.xhtml" class="navbar-brand logoFont logoSettings"><font size="10" color="white"><b>MeteoCal</b></font></a>
+                            </div>
+                            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                                <ul class="nav navbar-nav navbar-right lobsterFont">
+                                    <li><font color="white" size="4">ADMINISTRATOR PAGE</font></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+                    <div class="bs-docs-featurette">
+                        <div class="container">
+                            <div class="col-sm-5 jumbotron whiteText transparent">
+                                <img src="../resources/images/admin.png"/>
+                            </div>
+                            <div class="col-sm-6 rightFloat">
+                                <div class="panel panel-default panel-body marginTop-4">
+                                    <p>
+                                        <strong class="robotoFontText">Administrator Page</strong><br/><br/>
+                                    </p>
+                                    In this page administrator can manage the web application. 
+                                    For now, the only value that can manage is the time at which the meteo refresh 
+                                    <br/><br/>
+                                    <h:form id="adminPan">                
+                                        Refresh frequency for Weather Forecast (in hours): <br/>
+                                        <p:selectOneMenu id="userW" value="#{adminBean.adminSettings.freqWUser}" style="width:125px">
+                                            <f:selectItem itemLabel="1" itemValue="1" />
+                                            <f:selectItem itemLabel="5" itemValue="5" />
+                                            <f:selectItem itemLabel="12" itemValue="12" />
+                                        </p:selectOneMenu><br/>
+                                        <br/><br/>
+                                        <a href="../user/home.xhtml" style=" margin-left: 20px;"> Back </a>
+                                        <p:commandButton class="btn btn-danger btn-xs rightFloat" value="Update" update="adminPan" action="#{adminBean.update()}" type="submit"></p:commandButton>               
+                                    </h:form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </p:fragment>
+        
+        <p:fragment rendered="#{!userBean.admin}">
+             <center>
+                 <h1>You don't have the right permissions</h1>
+                 <br/><br/>
+             </center>
+            <br/><br/>
+        
+        </p:fragment>
+        
+        
+    </h:body>
+</html>
+
+

@@ -1,0 +1,812 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+    <ui:composition template="../resources/templates/newTemplate.xhtml">
+        
+        <ui:define name="title">
+             #{event.event.name}
+             #{event.id}
+        </ui:define>
+        
+        <ui:define name="breadcrumbs">
+            <li><a href="home.xhtml">Home</a></li>
+            <li class="active">#{event.event.name}</li>
+        </ui:define>
+        
+        
+        <ui:define name="style">
+            <style>
+                #searchResultsBoxInv  
+                {   width:458px;
+                    top:45px;
+                    left:0px;}
+                
+            </style>
+            
+            <link href="../resources/css/inTemplateStyle.css" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>
+            <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+            <link href="../resources/css/mapStyle.css" rel="stylesheet"/>
+            <link href="../resources/css/bootstrap-switch.css" rel="stylesheet" type="text/css"/>
+
+        </ui:define>
+        
+        <ui:define name="javascript">
+            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"/>
+            <!--<script src="../resources/js/mapJS.js"/>-->
+            <script src="../resources/js/newMap.js" type="text/javascript"></script>
+            <script src="../resources/js/bootstrap-switch.js" type="text/javascript"></script>
+            <script src="../resources/js/inviteFriend.js" type="text/javascript"></script>
+
+            <script>
+                /* <![CDATA[ */
+               
+                
+                
+                 //JSON ARRAY (not JSON STRING)
+                var alreadyInvited = #{event.alreadyInvited}; 
+                var invitationList = [];
+                var userEmail = "#{userBean.lu.email}";
+                
+                var eventPublic=#{event.event.isPublic};
+                var indooroutdoor=#{event.event.isOutdoor};
+                var canceled=#{event.event.isCanceled};
+                
+                var activeItem = "#btn0";
+                var activeSection = "#sec0";
+                
+                //Url parameters
+                var id = getNamedParameter("id");
+                var secToShow = getNamedParameter("secToShow");
+                var newStartDate = getNamedParameter("newStartDate");
+                
+                updateEvent=true;
+                
+                /**
+                 * Do not modify! Just copy and use it.
+                 * Retrieves the url parameter named paramName
+                 * @returns {undefined}
+                 */
+                function getNamedParameter(paramName){
+                    var url = ""+window.location.href;
+                    var allParams = url.split("?");
+                    var allParamsString = ""+allParams[1];
+                    var singleParamsWithNames = allParamsString.split("&");
+                    var paramsNames = new Array();
+                    var paramsValues = new Array();
+                    
+                    for(var i=0; i!==singleParamsWithNames.length; i++){
+                        var tempString = ""+singleParamsWithNames[i];
+                        var couple = tempString.split("=");
+                        paramsNames[i]=couple[0];
+                        paramsValues[i]=couple[1];
+                    }
+                    for(var j=0; j!==paramsNames.length; j++){
+                        if(paramName===paramsNames[j]){
+                            return paramsValues[j];
+                        }
+                    }
+                    return "";
+                }
+                /* ]]> */
+                
+                $(document).ready(function(){
+                    if(secToShow==="1" || secToShow==="2" || secToShow==="3"){
+                        showSection(secToShow);
+                    }else{
+                        showSection(0);
+                    }
+                   $("#deleteEventForm\\:id_event").val(id);
+
+                    //Initialize the toggle values
+                    if(eventPublic){
+                        $("#publicEventDiv").html('<input type="checkbox" id="publicEventChk" name="publicEventChk" checked="checked"/>');
+                    }else{
+                        $("#publicEventDiv").html('<input type="checkbox" id="publicEventChk" name="publicEventChk" />');
+                    }
+                    $("#publicEventBool").val(eventPublic);
+                    
+                    if(indooroutdoor){
+                        $("#outdoorEventDiv").html('<input type="checkbox" id="outdoorEventChk" name="outdoorEventChk" checked="checked"/>');
+                        $("#meteoSet").show();
+                    }else{
+                        $("#outdoorEventDiv").html('<input type="checkbox" id="outdoorEventChk" name="outdoorEventChk" />');
+                        $("#meteoSet").hide();
+                    }
+                    $("#outdoorEventBool").val(indooroutdoor);
+                    
+                    //Weather
+                    var indoor='#{event.event.isOutdoor}';
+                    var weather='#{event.event.weatherForecast.weather}';
+                    if(indoor==='true'){
+                        
+                        if(weather==='Nan'){
+                            document.getElementById("expWe").innerHTML='<p:outputLabel value="Not Available (weather forecast will be available five days before the event)"/>&nbsp;<br/><br/><br/>';
+                        }else{
+                            document.getElementById("expWe").innerHTML='<p:outputLabel value="#{event.event.weatherForecast.weather}"/>&nbsp;<br/><br/><br/>';       
+                        }
+                    }else{
+                        document.getElementById("expWe").innerHTML='<p:outputLabel value=" - "/>&nbsp;<br/><br/><br/>';
+                    }
+                                                    
+                    //Loading Toggle Switches
+                    $("[name='publicEventChk']").bootstrapSwitch();
+                    $("[name='outdoorEventChk']").bootstrapSwitch();
+                    $("[name='delEventChk']").bootstrapSwitch();
+
+                    $('input[name="publicEventChk"]').on('switchChange.bootstrapSwitch', function(event, state) {
+                    $("#updateEventForm\\:publicEventBool").val(state);
+                    });
+                    $('input[name="outdoorEventChk"]').on('switchChange.bootstrapSwitch', function(event, state) {
+                    $("#updateEventForm\\:outdoorEventBool").val(state);
+                    if(state){
+                        $("#meteoSet").show();
+                    }else{
+                        $("#meteoSet").hide();
+                    }
+                    });
+                    $('input[name="delEventChk"]').on('switchChange.bootstrapSwitch', function(event, state) {
+                    $("#deleteEventForm\\:delEventBool").val(state);
+                    });
+
+                    //Automatic set of the new start/end date
+                    if(newStartDate!==""){
+                        var newDay = newStartDate.slice(12,14);
+                        var newMonth = ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(newStartDate.slice(6,9)) / 3 + 1);
+                        var newYear = newStartDate.slice(20,24);
+                        var oldStartDate = "#{event.event.startsAt}";
+                        var oldStartTime = oldStartDate.slice(11,16);
+                        document.getElementById("updateEventForm:startsAt_input").value=newDay+"/"+newMonth+"/"+newYear+" "+oldStartTime;
+                        document.getElementById("updateEventForm:endsAt_input").value="";
+                    }
+                    
+                    showMap('signupForm','map-canvas','address','street','number','lat_long');
+                    
+                });
+                
+                function resetFields(){
+                    document.getElementById("updateEventForm:eventStrt").value="";
+                    document.getElementById("updateEventForm:eventNumb").value="";
+                    showMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long');
+                }
+                
+                function showSection(i) {
+                   $(activeItem).removeClass("active");
+                   $("#btn"+i).addClass("active");
+                   activeItem = "#btn"+i;
+                   
+                   $(activeSection).hide();
+                   $("#sec"+i).show();
+                   activeSection = "#sec"+i;
+                   $("#leftPanel").height(655);
+                   resize();
+                   //If I am in edit section, show the map
+                   if(i===2){
+                       showMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long');
+                   }
+                }
+                
+            </script>
+            
+        </ui:define>
+        <ui:define name="left">
+            <div class="list-group" id="left">
+                
+                <a  id="btn0" class="list-group-item active" onclick="showSection(0)">Event Details</a>
+                
+                <p:fragment rendered="#{event.iAmTheOwner()}">
+                    <a id="btn1" class="list-group-item"  onclick="showSection(1);">Invite Friends</a>
+                    <a  id="btn2" class="list-group-item" onclick="showSection(2)">Edit</a>
+                    <a  id="btn3" class="list-group-item" onclick="showSection(3)">Cancel Event</a>
+                </p:fragment>
+            </div>
+        </ui:define>
+        
+        <ui:define name="right">
+            <p:fragment rendered="#{event.iCanSeeThis()}">
+                <div id="sec0" hidden="true">
+
+                    <!--Is there an invitation for me? -->
+                    <p:fragment rendered="#{event.iAmInvited()}">
+                        <div id="myInvitation" class="panel panel-danger">
+
+                                <div class="panel-heading">
+                                    <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                        <h3 class="panel-title" style="color:rgb(48, 48, 48)!important;text-decoration: underline;float:">Your invitation</h3>
+                                    </a>
+
+                                </div>
+
+                            <div  id="collapseExample" class="collapse panel-body">
+                                STATUS OF THE INVITATION: <b>#{event.myInvitation.status}</b>
+                                <br/><br/>
+                                <p:fragment rendered="#{!event.canPerformActionOnInvitation()}">
+                                    <p><b>Notice:</b> You cannot accept this invitation beacause in this date and time you are busy with another event.</p>
+                                </p:fragment>
+                                Text of the invitation:
+                                <p>
+                                    #{event.myInvitation.text}
+                                </p>
+
+                                <p:fragment rendered="#{event.canPerformActionOnInvitation()}">
+                                    <p:fragment rendered="#{event.myInvitation.isDeclined()}">
+                                        <script>
+                                            $(document).ready(function(){
+                                                $("#myInvitation").removeClass("panel-success");
+                                                $("#myInvitation").removeClass("panel-warning");
+                                                $("#myInvitation").addClass("panel-danger");
+                                            });                   
+                                        </script>
+                                        <h:form>
+                                            <input type="hidden" name="id" value="#{event.id}"/>
+                                            <p:commandButton class="btn btn-success" value="Accept" action="#{event.acceptInvitation()}"/>
+                                        </h:form>
+
+                                    </p:fragment>
+
+                                    <p:fragment rendered="#{event.myInvitation.isAccepted()}">
+                                        <script>
+                                            $(document).ready(function(){
+                                                $("#myInvitation").removeClass("panel-danger");
+                                                $("#myInvitation").removeClass("panel-warning");
+                                                $("#myInvitation").addClass("panel-success");
+                                            });                   
+                                        </script>
+                                        <h:form>
+                                            <input type="hidden" name="id" value="#{event.id}"/>
+                                            <p:commandButton class="btn btn-danger" value="Decline" action="#{event.declineInvitation()}"/>
+                                        </h:form>
+                                    </p:fragment>
+                                    <p:fragment rendered="#{event.myInvitation.isPending()}">
+                                        <script>
+                                            $(document).ready(function(){
+                                                $("#myInvitation").removeClass("panel-danger");
+                                                $("#myInvitation").removeClass("panel-success");
+                                                $("#myInvitation").addClass("panel-warning");
+                                            });                   
+                                        </script>
+                                        <h:form>
+                                            <input type="hidden" name="id" value="#{event.id}"/>
+                                            <p:commandButton class="btn btn-success" value="Accept" action="#{event.acceptInvitation()}"/>
+                                            <p:commandButton class="btn btn-danger" value="Decline" action="#{event.declineInvitation()}"/>
+                                        </h:form>
+                                    </p:fragment>
+                                </p:fragment>
+                                <p:fragment rendered="#{event.myInvitation.isCanceled()}">
+                                    <script>
+                                        $(document).ready(function(){
+                                            $("#myInvitation").removeClass("panel-success");
+                                            $("#myInvitation").removeClass("panel-warning");
+                                            $("#myInvitation").addClass("panel-danger");
+                                        });                   
+                                    </script>
+                                    <h> THIS EVENT WAS CANCELED, YOU CANNOT PERFORM ANY ACTION.</h>
+                                </p:fragment>
+                            </div>
+                        </div>
+
+                    </p:fragment>
+
+                        <h:form id="signupForm">
+                            <div class="col-sm-12 inCenter" >
+                                <div class="col-sm-8">
+                                    
+                                    <p:outputLabel value="#{event.event.name}" class="eventTitle"/>
+                                    <hr/>
+                                    
+                                    <br/>
+                                    <div class="col-sm-12">
+                                        
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>WHEN</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:6px">
+                                            <p:outputLabel value="#{event.event.startsAt}"/> &nbsp;&nbsp; <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp; 
+                                            <p:outputLabel value="#{event.event.endsAt}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>ADDRESS</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <h:inputHidden id="street" value="#{event.event.location.street}"/>
+                                            <p:outputLabel value="#{event.event.location.street}"/>&nbsp;
+                                            <h:inputHidden id="number" value="#{event.event.location.number}"/>
+                                            <p:outputLabel value="#{event.event.location.number}"/>&nbsp;
+                                            <br/>
+                                            <h:inputHidden id="address" value="#{event.event.location.city}"/>
+                                            <p:outputLabel value="#{event.event.location.city}"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>EXTRA</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value="#{event.event.location.extraInfo}"/>&nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>DESCRIPTION</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;" maxlenght="10">
+                                            <p:outputLabel value="#{event.event.description}"/>&nbsp;
+                                            <br/>
+                                            <h:inputHidden id="lat_long" value="#{event.event.location.coordinates}"/><br/><br/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>FACEBOOK</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value="#{event.event.facebookLink}"/>&nbsp;
+                                            <br/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>TWITTER</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value="#{event.event.twitterLink}"/>&nbsp;
+                                            <br/><br/><br/>
+                                        </div>
+                                    </div>                     
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>ALERT IF WORSE THAN</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value="#{event.notifTrigger}"/>&nbsp;
+                                            <br/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2">
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>EXPECTED WEATHER </strong>
+                                            </h5>
+                                        </div>
+                                        <div id="expWe" class="col-sm-10 grayFont" style="margin-top:7px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2" >
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>OWNER</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value="#{event.event.user.name}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-2" >
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>PENDING</strong>
+                                            </h5>
+
+                                             <!-- Pending users -->
+                                             <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                                    <div class="scrollable" style="height:100px; width:600px; padding-left:70px;" >
+
+
+                                                        <!--Data table for pending users-->
+                                                        <p:dataTable id="pending" var="invitation" value="#{event.pending}" styleClass="foll borderless hide-column-names" emptyMessage="No pending invitations.">
+                                                            <p:column headerText="" style="width:20%;">
+                                                                <img src= "#{invitation.invitedUser.avatarString}" class="iconSmall"/>
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.invitedUser.name}
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.status}
+                                                            </p:column>
+                                                        </p:dataTable>
+
+                                                    </div>
+                                             </div>
+
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>GOING</strong>
+                                            </h5>
+
+                                             <!-- Pending users -->
+                                             <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                                    <div class="scrollable" style="height:100px; width:600px; padding-left:70px;" >
+
+
+                                                        <!--Data table for pending users-->
+                                                        <p:dataTable id="accepted" var="invitation" value="#{event.accepted}" styleClass="foll borderless hide-column-names" emptyMessage="No accepted invitations.">
+                                                            <p:column headerText="" style="width:20%;">
+                                                                <img src= "#{invitation.invitedUser.avatarString}" class="iconSmall"/>
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.invitedUser.name}
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.status}
+                                                            </p:column>
+                                                        </p:dataTable>
+
+                                                    </div>
+                                             </div>
+
+                                            <h5 class="blueFont robotoFontText" >
+                                                <strong>DECLINED</strong>
+                                            </h5>
+
+                                             <!-- Pending users -->
+                                             <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                                    <div class="scrollable" style="height:100px; width:600px; padding-left:70px;" >
+
+
+                                                        <!--Data table for pending users-->
+                                                        <p:dataTable id="declined" var="invitation" value="#{event.declined}" styleClass="foll borderless hide-column-names" emptyMessage="No declined invitations.">
+                                                            <p:column headerText="" style="width:20%;">
+                                                                <img src= "#{invitation.invitedUser.avatarString}" class="iconSmall"/>
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.invitedUser.name}
+                                                            </p:column>
+                                                            <p:column headerText="" class="">
+                                                               #{invitation.status}
+                                                            </p:column>
+                                                        </p:dataTable>
+
+                                                    </div>
+                                             </div>
+
+                                        </div>
+                                        <div class="col-sm-10 grayFont" style="margin-top:7px;">
+                                            <p:outputLabel value=""/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="map-canvas" class="col-sm-5" style="margin-top:100px;">  
+                                </div>
+                            </div>                    
+                            <br/>
+                            <center>
+                            </center>
+                        </h:form>
+
+
+                    </div>
+                
+                    <!--SECTIONS TO BE SHOWN ONLY FOR OWNER-->
+                    <p:fragment rendered="#{event.iAmTheOwner()}">
+                        <div id="sec1" class="col-sm-12" hidden="true">
+                         <p:fragment>
+                             <h3>
+                                <strong>
+                                    <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                                    &nbsp; Invite Friends
+                                </strong>
+                             </h3>
+                             <hr/>
+                             <br/>
+                            <div class="alert alert-danger" role="alert" id="addError" style="display:none">
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                <span id="addErrorMessage"></span>
+                            </div>
+                            <p:tabView dynamic="true" cache="true">
+                                <p:tab title="All users">
+                                    <h:panelGrid columns="1" cellpadding="0">
+
+                                        <!--Search input-->
+                                        <div class="input-group" id="searchBar">
+                                            <input type="text" class="form-control dropdown-toggle" placeholder="Search users" id="searchInputInvitation"/>                                  
+                                            <span class="input-group-addon" id="lensInv">
+                                              <span class="glyphicon glyphicon-search" ></span>
+                                            </span>
+                                            <!--Results-->
+                                        <div class="panel panel-default appearingBox" id="searchResultsBoxInv">
+                                            <!--Fill with results-->                   
+                                        </div>
+                                        </div>
+
+                                    </h:panelGrid>  
+                                </p:tab>
+                                <p:tab title="Followed users">
+                                    <h:panelGrid columns="2" cellpadding="10">
+
+                                        <!--Followed users--> 
+                                        <div class="scrollable">
+
+                                            <p:dataTable id="follows" var="user" value="#{userBean.currentUser.follows}" styleClass="foll borderless hide-column-names" emptyMessage="You are not following anyone.">
+                                                <p:column headerText="" style="width:20%;">
+                                                    <img src= "#{user.avatarString}"  class="iconSmall"/>
+                                                </p:column>
+                                                <p:column headerText="" class="">
+                                                   #{user.name}
+                                                </p:column>
+                                                <p:column headerText="" class="">
+                                                    <button onclick="add('#{user.avatarString}', '#{user.name}', '#{user.email}')" class="btn" >
+                                                        <span class="glyphicon glyphicon-plus" />
+                                                    </button>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+
+                                    </h:panelGrid>
+                                </p:tab>
+                                <p:tab title="Email invitation">
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <div class="form-inline">
+
+                                            <input type="email" id="byUE" placeholder="Email address" class="form-control dropdown-toggle"/>
+
+                                            <button onclick="add('#{userBean.defaultIcon()}',$('#byUE').val(), $('#byUE').val())" class="btn" >
+                                                 <span class="glyphicon glyphicon-plus" />
+                                            </button>
+                                        </div>
+                                    </h:panelGrid>
+                                </p:tab>
+
+
+                            </p:tabView>
+                            <h:form>
+                                <h4>Invitation Message</h4>
+                                <p:inputTextarea value="#{event.invitationText}"  label="text" rows="3" cols="60"/>
+
+                                <h4>Invitation list</h4>
+                                <!--Aggiunti-->
+                                <div class="scrollable" style="height:250px">
+                                        <table class="table" id="added">
+                                            <tr><td>No invited Users.</td></tr>
+                                        </table> 
+                                </div>
+
+                                <span id="invitationListHiddenWrapper">
+                                    <h:inputHidden  id="invitationListHidden" value="#{event.invitationList}" />
+                                </span>
+                                <input type="hidden" name="id" value="#{event.id}"/>
+                                <br/>
+                                <h:commandButton class="btn btn-primary" style="position:absolute; width:100px; bottom: 10px;right: 15px"  value="Send" action="#{event.sendInvitations()}" />       
+                            </h:form>
+                            <!--<button style="position:absolute; bottom: 10px;right: 15px" onclick="sendInvitation()" class="btn btn-primary">Send</button>-->
+
+                        </p:fragment>
+                        </div>
+
+                        <div id="sec2" hidden="true" class="col-sm-12">
+                            <h3><strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp; Edit Event </strong></h3>
+                            <hr/>
+
+                            <!--UPDATE-->
+                            <h:form id="updateEventForm">
+                                <!--ID PARAMETER-->
+                                <p:messages id="eventEditError" showDetail="true"/>
+                                <input type="hidden" name="id" value="#{event.id}"/>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>EVENT NAME</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputText id="eventName" class="col-sm-8" value="#{event.event.name}" required="true" requiredMessage="Event Name is a mandatory field">
+                                            <p:ajax event="blur" update="errorName" />
+                                        </p:inputText>
+                                        <div class="col-sm-8" style="margin-top:10px">
+                                            <p:message id="errorName" for="eventName" />
+                                            <br/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>WHEN</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <div id="dates">
+                                            <p:calendar id="startsAt" value="#{event.event.startsAt}" placeholder="New start date" pattern="dd/MM/yyyy HH:mm" required="true" requiredMessage="Start date is a mandatory field">
+                                                <p:ajax event="blur" update="errorStart" />
+                                            </p:calendar>
+
+                                            <span class="glyphicon glyphicon-arrow-right" />
+                                            <p:calendar id="endsAt" value="#{event.event.endsAt}" placeholder="New end date" pattern="dd/MM/yyyy HH:mm" required="true" requiredMessage="End date is a mandatory field">
+                                                <p:ajax event="blur" update="errorEnd" />
+                                            </p:calendar>
+                                        </div>
+                                        <div class="col-sm-8" style="margin-top:10px">
+                                            <p:message id="errorStart" for="startsAt" />
+                                            <p:message id="errorEnd" for="endsAt" />
+                                            <br/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>ADDRESS</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputText id="eventCity" class="col-sm-8" value="#{event.event.location.city}" required="true" requiredMessage="City is a mandatory field" onblur="UpdateMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long')" onfocus="resetFields()">
+                                            <p:ajax event="blur" update="errorCity" />
+                                        </p:inputText>
+                                        <br/><br/>
+                                        <p:inputText id="eventStrt" class="col-sm-7" value="#{event.event.location.street}" onblur="UpdateMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long')" onfocus="showMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long');"/>&nbsp;
+                                        <p:inputText id="eventNumb" style="width: 65px" value="#{event.event.location.number}" validatorMessage="Civic number not valid" onblur="UpdateMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long')" onfocus="showMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long');">
+                                            <f:validateRegex pattern="(^[0-9]{1,3}([a-z]?)$)?" />
+                                            <p:ajax event="blur" update="errorNumber" />
+                                        </p:inputText>
+                                        <h:inputHidden id="event_lat_long" value="#{event.event.location.coordinates}" />
+                                        <div class="col-sm-8" style="margin-top:10px">
+                                            <p:message id="errorCity" for="eventCity" />
+                                            <p:message id="errorNumber" for="eventNumb" />
+                                            <br/>
+                                        </div>
+                                        <div id="event-map-canvas" style="width: 500px; height: 200px;">
+                                        </div>
+                                        <br/>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>EXTRA</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputTextarea id="eventExtra" class="col-sm-7" value="#{event.event.location.extraInfo}"/>
+                                        <br/><br/><br/><br/><br/>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>DESCRIPTION</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputTextarea id="eventDesc" class="col-sm-7" value="#{event.event.description}"/>
+                                        <br/><br/><br/><br/><br/>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>FACEBOOK</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputText id="eventFb" class="col-sm-7" value="#{event.event.facebookLink}" placeholder="Facebook link"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>TWITTER</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10 grayFont">
+                                        <p:inputText id="eventTw" class="col-sm-7" value="#{event.event.twitterLink}" placeholder="Twitter link"/>
+                                        <br/><br/><br/>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>PUBLIC</strong>
+                                        </h5>
+                                    </div>
+                                    <div id="publicEventDiv" class="col-sm-10">
+                                    </div>
+                                    <h:inputHidden id="publicEventBool" value="#{event.event.isPublic}"/>
+                                    <br/><br/><br/>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>OUTDOOR</strong>
+                                        </h5>
+                                    </div>
+                                    <div id="outdoorEventDiv" class="col-sm-10">
+                                    </div>
+                                    <h:inputHidden id="outdoorEventBool" value="#{event.event.isOutdoor}" />
+                                </div>
+
+                                <div id="meteoSet" class="col-sm-12">
+                                    <div class="col-sm-2">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>METEO TRIG.</strong>
+                                        </h5>
+                                    </div>
+                                    <div class="col-sm-10" style="margin-top:10px">
+                                        <p:selectOneRadio id="customRadio" layout="custom" value="#{event.event.notIfTrigger}">
+                                            <f:selectItem itemLabel="Sun" itemValue="0"/>
+                                            <f:selectItem itemLabel="Clouds" itemValue="1"/>
+                                            <f:selectItem itemLabel="Rain" itemValue="2"/>
+                                            <f:selectItem itemLabel="Thunder" itemValue="3"/>
+                                            <f:selectItem itemLabel="Snow" itemValue="4"/>
+                                            <f:selectItem itemLabel="None" itemValue="5"/>
+                                        </p:selectOneRadio>
+                                        <h:panelGrid columns="2" cellpadding="7">
+                                            <p:radioButton id="opt1" for="customRadio" itemIndex="0" />
+                                            <strong>&nbsp; SUN &nbsp; <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>&nbsp;</strong>
+                                            <p:radioButton id="opt2" for="customRadio" itemIndex="1" />
+                                            <strong>&nbsp; CLOUDS &nbsp; <span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>&nbsp;</strong>
+                                            <p:radioButton id="opt3" for="customRadio" itemIndex="2" />
+                                            <strong>&nbsp; RAIN &nbsp; <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>&nbsp;</strong>
+                                            <p:radioButton id="opt4" for="customRadio" itemIndex="3" />
+                                            <strong>&nbsp; THUNDER &nbsp; <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>&nbsp;</strong>
+                                            <p:radioButton id="opt5" for="customRadio" itemIndex="4" />
+                                            <strong>&nbsp; SNOW &nbsp; <span class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span>&nbsp;</strong>
+                                            <p:radioButton id="opt6" for="customRadio" itemIndex="5" />
+                                            <strong>&nbsp; NONE &nbsp; </strong>
+                                        </h:panelGrid>
+                                    </div>
+                                </div>
+                                
+                                <p:commandButton class="btn btn-success" value="Save" style="position:absolute; width:100px; bottom: 10px;right: 15px" update="updateEventForm" action="#{event.saveEdits()}" onmouseover="showMap('updateEventForm','event-map-canvas','eventCity','eventStrt','eventNumb','event_lat_long')" type="submit" />
+
+                            </h:form>
+                        </div>
+
+                        <div id="sec3" class="col-sm-12" hidden="true">
+                            <h3><strong><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp; Cancel Event</strong></h3>
+                            <hr/><br/>
+                            <div class="col-sm-8">
+                                <h:form id="deleteEventForm">
+                                    <!--ID PARAMETER-->
+                                    <input type="hidden" name="id" value="#{event.id}"/>
+                                    <div id="delEventDiv" class="col-sm-3">
+                                        <input type="checkbox" id="delEventChk" name="delEventChk" />
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h5 class="blueFont robotoFontText">
+                                            <strong>DELETE EVENT</strong>
+                                        </h5>
+                                    </div>
+                                    <h:inputHidden id="delEventBool" value="#{event.event.isCanceled}" />
+                                    <br/><br/><br/>
+                                    <div class="col-sm-8">
+                                        <p:commandButton class="btn btn-danger col-sm-2" style="width:100px;" value="Confirm" update="deleteEventForm" type="submit" action="#{event.cancelEvent()}" />      
+                                    </div>
+                                </h:form>
+                            </div>
+                        </div>
+                    </p:fragment>
+            </p:fragment>
+        </ui:define>  
+    </ui:composition>
+
+</html>

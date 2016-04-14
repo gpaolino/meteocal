@@ -1,0 +1,206 @@
+\documentclass[12pt]{book}
+\usepackage[explicit]{titlesec}
+\usepackage{lmodern}
+\usepackage{lipsum}
+\let\cleardoublepage\clearpage
+\newlength\chapnumb
+\setlength\chapnumb{4cm}
+
+\titleformat{\chapter}[block]
+{\normalfont\sffamily}{}{0pt}
+{\parbox[b]{\chapnumb}{
+   \fontsize{120}{110}\selectfont\thechapter}
+  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{
+    \raggedleft
+    \hfill{\LARGE#1}\\
+    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
+\titleformat{name=\chapter,numberless}[block]
+{\normalfont\sffamily}{}{0pt}
+{\parbox[b]{\chapnumb}{
+   \mbox{}}
+  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{
+    \raggedleft
+    \hfill{\LARGE#1}\\
+    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
+   
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage[T1]{fontenc}
+\usepackage[english,italian]{babel}
+\usepackage{hyperref}
+\setcounter{tocdepth}{1}
+
+
+\title{PROJECT PLAN document}
+\author{Alessandro Negrini \and Andrea Gulino \and Paolo Guglielmino}
+\date{October 2014}
+
+\begin{document}
+\selectlanguage{english}
+
+\tableofcontents
+\newpage\null\thispagestyle{empty}\newpage
+
+\chapter{Introduction}
+This document has the purpose of giving an overview on the project in terms of development phases. For each one, we identify the constitutive tasks and we provide a first effort estimation. \\ \medskip
+
+In addition, at the end of the document we will present our team and the way we organise our work in order to successfully complete and meet the deadlines.\\ 
+MeteoCal is a weather based online calendar that allows people to schedule their activities avoiding bad weather conditions in case of outdoor events.
+\section{Software overview}
+MeteoCal software must allow its users to create, update and delete new events and add them to their personal calendar.\\ Each event has its own information, in terms of time and place where the event will take place and wether the event will be indoor or outdoor. \\
+As soon as a new event is created, the system has to enrich the event with weather forecast information. In case of bad weather, the users will be notified by email or when they log into the system one day before the event takes place. \\
+In case of indoor events, there will be no particular tasks to provide. On contrary, for outdoor events, the system should provide a smart solution in case the event can't be carried out. The solution will be presented in a more detailed way in the RASD document. \\
+The software should also allow the users to invite other people to their personal events as guests. Only the user who has created the event is allowed to update or delete it. Guests users can either accept or decline the invitation. \\ \medskip
+
+The above is just a brief introduction to what the system will be able to do. In fact, in RASD document system tasks are described more in depth, and every detail is taken into account and explained. \\
+
+\section{Task To Do}
+We must develop the system using the Java EE platform. In particular, we will use EJBs to develop the business logic. The user interface can either be a web application or a normal Java application. We opted for a web application.  The user interface has to interact with the business logic.
+
+\section{Deadlines}
+In order to complete the project, we must proceed through some steps and deadlines. The expected deadlines are the following : 
+
+\begin{itemize}
+	\item	\textbf{2 November 2014} : Group presentation\\
+		Form our group and create a google code repository
+	\item \textbf{16 November 2014} : RASD (Requirements Analysis and Specification Document)\\
+		RASD Document will contain the description of scenarios, use cases that describe them, and the models describing requirements and specifications.
+	\item \textbf{7 December 2014} : DD (Design Document) \\
+		DD must contain a functional description of the system and any other view you find useful to provide. 
+	\item \textbf{25 January 2015} : Implementation \\
+		RASD document must be implemented respecting to requirements. We must provide source code and executable, installation and user manual, system test cases. Also a document containing information on the number of hours must be included. 
+	\item \textbf{8 February 2015} : Acceptance Testing \\
+		Define of test cases and report on the execution of test for system developed by a different group. 
+	\item \textbf{10 February 2015} : Project reporting \\
+		Apply Function Point approach to project and check id the result are similar to the actual size of our project. 
+	\item \textbf{Final Presentation}\\
+		Presentation of our project providing an overview on documents and design decisions, a demo of the system. Duration 40 minutes ( since we are a three student group)
+\end{itemize}
+
+\chapter{Project Plan }
+In this part is discussed in a more detailed way the work load associated to each phase. 
+This part of document will be brought at each meeting in order to cover every point
+\section{Group Registration and Project Planning}
+This consists just on forming a group, understanding the problem and plan the project, even if there isn't ad hoc deadline. 
+\begin{enumerate}
+	\item Creating of group 
+	\item Understanding the problem
+	\item Defining meetings
+	\item Defining tools, software, ...
+	\item Individuating macro-tasks and writing of project plan document
+\end{enumerate}
+\section{Requirements analysis and specification document (RASD)}
+\begin{enumerate}
+	\item Identifying goals, domain, and requirements 
+	\item Identifying actors
+	\item Identifying scenarios and use cases 
+	\item Analysis class diagram
+	\item Analysis activity diagram
+	\item Analysis sequence diagram
+	\item Analysis activity diagram
+	\item Analysis state chart diagram
+	\item Learning, defining, implementing and testing Alloy Model
+	\item Writing RASD document
+	\item Revision of document
+\end{enumerate}
+\section{Design Document (DD)}
+\begin{enumerate}
+	\item Identifying Architecture 
+	\item Identifying components and their responsibility inside the system
+	\item Identifying Technologies 
+	\item Defining UX diagram
+	\item Modeling system 
+	\item Documentation
+	\item Revision
+\end{enumerate}
+
+\section{Implementation}
+\begin{enumerate}
+	\item Setup development tools (Eclipse, Git, Maven, ... ) 
+	\item Data layer implementation
+	\item Business logic implementation
+	\item Web tier implementation
+	\item User interface implementation 
+	\item Testing
+	\item Drawing up installation and user manual
+\end{enumerate}
+
+\section{Testing on other group project}
+\begin{enumerate}
+	\item Identifying test cases  
+	\item Documentation
+	\item Revision
+\end{enumerate}
+
+\section{Detailed Project Plan}
+During the development of the system we will fill in a table in which for each activity we indicate the amount of time spent on it. To see this file, please refer to DetailedMeetings.pdf file.  
+
+\chapter{Project Members}
+Our group is composed by three students, thus we have to add the following extensions to the system :  
+\begin{itemize}
+	\item system has to provide mechanism in order to make calendar/event public, so visible to all other registered users.  
+	\item system has to be able to find the closest sunny day in case of bad weather
+	\item system must notify users by mail 
+	\item user can import and export their calendar
+	\item system must avoid conflicts
+	\item system must update weather conditions associated to events periodically. 
+\end{itemize}
+\section{Project Teachers and Tutors}
+\begin{itemize}
+	\item Raffaela Mirandola (Leader)
+	\item Elisabetta Di Nitto (Leader)
+	\item Marco Miglierina (Tutor)
+\end{itemize}
+\section{Team Members}
+\begin{itemize}
+	\item Alessandro Negrini (alessandro2.negrini@mail.polimi.it)
+	\item Andrea Gulino (andrea.gulino@mail.polimi.it)
+	\item	Paolo Guglielmino (paolo.guglielmino@mail.polimi.it)
+\end{itemize}
+
+\chapter{Team Organization}
+In order to work efficiently, the workload will be splitted and distributed among the team members according to two different aspects. \\ 
+First, we will try to allocate activities depending on \textbf{personal capabilities and skills}. \\ 
+On the other hand, we will also take care of \textbf{time availability} of each of us, trying to find the best compromise between the two aspects. \\ \medskip
+
+Some activities will be carried out in a jointly way, like in the case of documents writing, because we think that debate and knowledge sharing is the right way to get the best result. \\
+On the other hand, some activities will be accomplished in a distribute way. That's the case of coding: we will work in parallel each of us developing a different part of the system. \\
+
+
+
+\section{Team Meetings}
+We have planned 3 meetings per week for a total amount of 4 hours according to the needs of each of us. \\
+During those hours we will work together on a particular common task and we will line up the work made during the week. 
+
+\begin{itemize}
+	\item Monday 15.00 - 16.00
+	\item	 Wednesday 15.00 - 16.00
+	\item Thursday	13.00 - 15.00
+\end{itemize}
+
+However, this dates are not binding, if it happens that a meeting can't be met, it will be kept in another available date. \\
+Some other extra meetings are not excluded.   \\
+For a global view of meetings please refer to our google code, where for each meeting we stored tasks performed. \\
+
+\section{Tools for Development}
+
+\begin{itemize}
+	\item \textbf{Signavio} for designing UML diagrams ( Class Diagram, Use Case, ...) and \textbf{Alloy} for RASD Document
+	\item \textbf{Latex} and \textbf{PDF files} for the documentation
+	\item \textbf{Eclipse IDE} and \textbf{Brackets} for write Java code, HTML, Javascript, ... 
+	\item \textbf{JEE unitary test tools} for testing
+\end{itemize}
+\section{Collaboration Tools and  Media}
+
+We will use the most famous tools to communicate and collaborate : 
+\begin{itemize}
+	\item WhatsApp 
+	\item Skype
+	\item Email 
+	\item TeamViewer (remote control and online meeting)
+\end{itemize}
+
+\end{document}

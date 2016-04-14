@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="../resources/templates/newTemplate.xhtml">
+        
+        <ui:define name="title">
+            My Profile
+        </ui:define>
+        
+        <ui:define name="style">
+            <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>
+            <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+            <link href="../resources/css/mapStyle.css" rel="stylesheet"/>
+            <link href="../resources/css/bootstrap-switch.css" rel="stylesheet" type="text/css"/>
+        </ui:define>
+        
+        <ui:define name="javascript">
+            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+            <script src="../resources/js/newMap.js" type="text/javascript"></script>
+            <script src="../resources/js/base64Encoding.js"></script>
+            <script src="../resources/js/bootstrap-switch.js" type="text/javascript"></script>
+            <script src="../resources/js/myprofile.js" type="text/javascript"></script>
+            <script>
+                //Variables
+                var isPublic = #{userBean.currentUser.hasPublicCalendar};
+                var activeItem = "#btn0";
+                var activeSection = "#sec0";
+                $(document).ready(resize);
+            </script>
+        </ui:define>
+        
+        <ui:define name="breadcrumbs">
+            <li><a href="home.xhtml">Home</a></li>
+            <li class="active">My Profile</li>
+        </ui:define>
+        
+        <ui:define name="left">
+            <!-- Navigation menu -->
+            <div class="list-group">
+                <a  id="btn0" class="list-group-item active" onclick="showSection(0)">My Personal Info</a>
+                <a  id="btn1" class="list-group-item" onclick="showSection(1)">Change Password</a>
+                <a  id="btn2" class="list-group-item" onclick="showSection(2)">Privacy</a>
+                <a  id="btn3" class="list-group-item" onclick="showSection(3)">Delete Account</a>
+            </div>
+        </ui:define>
+        
+        <ui:define name="right">
+            <div>
+                <!-- Personal information section -->
+                <div id="sec0" hidden="true">
+                    <h:form id="signupForm" class="col-sm-12">
+                        <h3><strong><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span style="margin-left:10px;">My Personal Information</span></strong></h3>
+                        <hr/><br/>
+
+                        <div class="col-sm-7">
+                            <p:outputLabel class="col-sm-7 littleFont bold" value="Your e-mail address:"></p:outputLabel>
+                            <br/>
+                            <p:inputText class="col-sm-7 ralewayFontText" id="email" value="#{userBean.lu.email}" readonly="true" required="true" requiredMessage="Mandatory Field" validatorMessage="Wrong Pattern">
+                                <f:validateRegex pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"/>
+                                <p:ajax event="blur" update="errorEmail" />
+                            </p:inputText>
+                            <br/><br/>
+                            <div class="col-sm-8">
+                                <p:message id="errorEmail" for="email"></p:message>
+                            </div>
+                            <br/>
+
+                            <p:outputLabel class="col-sm-7 littleFont bold" value="Your full name:"></p:outputLabel>
+                            <br/>
+                            <p:inputText class="col-sm-7 ralewayFontText" id="givenName" value="#{userBean.lu.name}" required="true" requiredMessage="Name is a mandatory field" validatorMessage="Wrong Pattern">
+                                <f:validateLength minimum="2"/>
+                                <p:ajax event="blur" update="errorName" />
+                            </p:inputText>
+                            <br/><br/>
+                            <div class="col-sm-7" style="margin-top:5px">
+                                <p:message id="errorName" for="givenName"></p:message>
+                            </div>
+                            <br/><br/>
+
+                            <p:outputLabel class="col-sm-7 littleFont bold" value="Your city:"></p:outputLabel>
+                            <br/>
+                            <p:inputText type="text" id="address" class="col-sm-7 ralewayFontText" value="#{userBean.lu.location.city}" required="true" onblur="UpdateMap('signupForm','map-canvas','address','','','lat_long')" requiredMessage="City is a mandatory field">
+                                <p:ajax event="blur" update="errorAddress" />
+                            </p:inputText>
+                            <h:inputHidden id="lat_long" class="col-sm-7 ralewayFontText" value="#{userBean.lu.location.coordinates}"/><br/><br/>
+                            <div class="col-sm-7" style="margin-top:5px">
+                                <p:message id="errorAddress" for="address"></p:message>
+                            </div>
+                            <div id='map-canvas' class="img-thumbnail" style="width:355px"></div>
+                        </div>
+
+                        <div class="col-sm-4" >
+                            <div id="getimage" style="margin-top:10px">
+                                <img src= "#{userBean.lu.avatarString}"  style="width:150px" class="img-thumbnail" />
+                            </div>
+                            <font color="grey" size="1">(Images with dimension less or equal to 1 MB)</font><br/>
+                            <br/>
+                            <button id="openimage" class=" btn btn-primary ralewayFontText littleFont" type="button" style="width:150px">Change Avatar</button>
+                            <input id="readimg" type="file" name="imagereader" accept="image/x-png, image/gif, image/jpeg" />
+                            
+                            <h:inputHidden class="ralewayFontText" id="avatarBase64" value="#{userBean.lu.avatarString}"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <p:commandButton class="btn btn-success" style="width:150px" value="Save" update="signupForm" onmouseover="UpdateMap('signupForm','map-canvas','address','','','lat_long')" action="#{userBean.updateMyPersonalInfo()}" type="submit"></p:commandButton>
+                        </div>
+                    </h:form>
+                </div>
+                
+                <!-- Change password section -->
+                <div id="sec1" class="col-sm-12" hidden="true">
+                    <h3><strong><span class="glyphicon glyphicon-lock" aria-hidden="true"></span><span style="margin-left:10px;">Change Password</span></strong></h3>
+                    <hr/><br/>
+                    <div class="col-sm-8">
+                        <h:form id="changePwdForm" class="col-sm-10">
+                            <p:password id="oldpwd" class="col-sm-9 ralewayFontText" placeholder="Old Password" value="#{userBean.user.password}" required="true" label="Old Password" requiredMessage="Old Password is a mandatory field" />
+                            <br/><br/><br/>
+                            <p:password id="password" class="col-sm-9 ralewayFontText" placeholder="New Password" value="#{userBean.newPassword}" match="password1" required="true" label="New Password" requiredMessage="New Password is a mandatory field" validatorMessage="New Passwords don't match"/>
+                            <br/><br/><br/>
+                            <p:password id="password1" class="col-sm-9 ralewayFontText" placeholder="Confirm Password" required="true" label="Confirm Password" requiredMessage="Confirm Password is a mandatory field" />
+                            <br/><br/><br/>
+                            <p:commandButton class="btn btn-success col-sm-9" style="width: 150px" value="Save" update="changePwdForm" action="#{userBean.changePassword()}" type="submit"></p:commandButton>
+                            <div class="col-sm-9">
+                                <p:messages id="errorPassword" showSummary="true" />
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+                
+                <!-- Privacy settings section -->
+                <div id="sec2" hidden="true" class="col-sm-12">
+                    <h3><strong><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span><span style="margin-left:10px;">Privacy</span></strong></h3>
+                    <hr/><br/>
+                    <div class="col-sm-8">
+                        <h:form id="privacySetForm">
+                            <div id="publicCalDiv" class="col-sm-3">
+                            </div>
+                            <div style="padding-top: 5px" class="col-sm-5">
+                                <p:outputLabel class="littleFont bold" value="Make my calendar public"></p:outputLabel>
+                            </div>
+                            <h:inputHidden id="publicCalBool" value="#{userBean.lu.hasPublicCalendar}" />
+                            <br/><br/><br/>
+                            <div class="col-sm-8">
+                                <p:commandButton class="btn btn-success" style="width: 150px" value="Save" update="privacySetForm" action="#{userBean.changePrivacy()}" type="submit"></p:commandButton>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+                
+                <!-- Delete account section -->
+                <div id="sec3" class="col-sm-12" hidden="true">
+                    <h3><strong><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span style="margin-left:10px;">Delete Account</span></strong></h3>
+                    <hr/><br/>
+                    <div class="col-sm-8">
+                        <h:form id="deleteAccountForm">
+                            <div class="col-sm-3">
+                                <input type="checkbox" name="delAccountChk" />
+                            </div>
+                            <div style="padding-top: 5px" class="col-sm-5">
+                                <p:outputLabel class="littleFont bold" value="Delete my account"></p:outputLabel>
+                            </div>
+                            <h:inputHidden id="delAccBool" value="#{userBean.deleteAcc}" />
+                            <br/><br/><br/>
+                            <div class="col-sm-8">
+                                <p:commandButton class="btn btn-danger" style="width: 150px" value="Confirm" update="deleteAccountForm" action="#{userBean.deleteAccount()}" type="submit"></p:commandButton>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>

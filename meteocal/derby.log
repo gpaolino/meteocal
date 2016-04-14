@@ -1,0 +1,26 @@
+----------------------------------------------------------------
+Fri Feb 27 12:24:20 CET 2015:
+Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): istanza a816c00e-014b-cac7-b502-000009310078
+sulla directory di database /private/var/folders/q6/s5kjnrn12dz8t7vpll0f_9xh0000gn/T/gfembed7902215413998087850tmp/lib/databases/embedded_default con caricatore classi sun.misc.Launcher$AppClassLoader@29453f44 
+Caricato da file:/Users/paologuglielmino/.m2/repository/org/glassfish/main/extras/glassfish-embedded-all/4.1/glassfish-embedded-all-4.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_25-b17
+user.dir=/Users/paologuglielmino/NetBeansProjects/meteocal-guglielmino-gulino-negrini/meteocal
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.10.2
+derby.system.home=null
+Programma di caricamento classe database avviato - derby.database.classpath=''
+----------------------------------------------------------------
+Fri Feb 27 12:24:25 CET 2015:
+Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): istanza 0a594127-014b-cac7-b502-000009310078
+sulla directory di database /private/var/folders/q6/s5kjnrn12dz8t7vpll0f_9xh0000gn/T/gfembed7902215413998087850tmp/lib/databases/ejbtimer con caricatore classi sun.misc.Launcher$AppClassLoader@29453f44 
+Caricato da file:/Users/paologuglielmino/.m2/repository/org/glassfish/main/extras/glassfish-embedded-all/4.1/glassfish-embedded-all-4.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_25-b17
+user.dir=/Users/paologuglielmino/NetBeansProjects/meteocal-guglielmino-gulino-negrini/meteocal
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.10.2
+derby.system.home=null
+Programma di caricamento classe database avviato - derby.database.classpath=''

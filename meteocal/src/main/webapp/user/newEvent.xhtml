@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="../resources/templates/newTemplate.xhtml">   
+            <ui:define name="title">
+               Create a new event
+            </ui:define>
+            
+            <ui:define name="style">
+                <link href='http://fonts.googleapis.com/css?family=Roboto:100' rel='stylesheet' type='text/css'/>  
+                <link rel="stylesheet" href="../resources/css/inTemplateStyle.css" />
+            </ui:define>
+
+            <ui:define name="javascript">
+                <script type="text/javascript" src="../resources/js/underscore-min.js"></script>
+                <script type="text/javascript" src="../resources/js/calendar.js"></script>
+                <script type="text/javascript" src="../resources/js/getImage.js"></script>
+                <!--Initialization of weather info-->
+                <script>
+                    var isOutdoor = false;
+                    $(document).ready(function() {                    
+                        simpleInterface();
+                        newEvent=true;
+                        repeatEvent=false;
+                        document.getElementById("signupForm:facebook").disabled=true;
+                        document.getElementById("signupForm:facebook").style.backgroundColor = "#E7E7E7";
+                        document.getElementById("signupForm:twitter").disabled=true;
+                        document.getElementById("signupForm:twitter").style.backgroundColor = "#E7E7E7";
+                        //Loads map, default centered in Milan
+                        showMap('signupForm','map-canvas','address_default','street','number','lat_long_default');
+                        //Hides meteoDiv, default value=indoor
+                        $("#meteoDiv").hide();
+                    });
+                    /**
+                     * Reset Address and Number fields
+                     * @returns {undefined}
+                     */
+                    function resetFields(){
+                        document.getElementById("signupForm:street").value="";
+                        document.getElementById("signupForm:number").value="";
+                        showMap('signupForm','map-canvas','address','street','number','lat_long');
+                    }
+                    /**
+                     * Show/Hide meteo trigger settings
+                     * @returns {undefined}
+                     */
+                    function enableDisableMeteoSettings(){
+                        if(isOutdoor){
+                            $("#meteoDiv").hide();
+                            isOutdoor = false;
+                        }else{
+                            $("#meteoDiv").show();
+                            isOutdoor = true;
+                        }
+                    }
+                </script>
+                <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+                <script src="../resources/js/newMap.js" type="text/javascript"></script>
+                <script src="../resources/js/mapJS.js"/>      
+            </ui:define>
+                     
+            <ui:define name="breadcrumbs">
+                <li><a href="home.xhtml">Home</a></li>
+                <li class="active">Create a new Event</li>
+            </ui:define>
+            
+            <ui:define name="left">
+            <!-- Navigation menu -->
+            <div class="list-group">
+                <a  id="btn0" class="list-group-item active">Create a new Event</a>
+            </div>
+            </ui:define>
+            
+            <ui:define name="right">
+                
+                <div class="">
+                    <div class="col-sm-3">
+                        <h3>
+                            <strong>Create a new Event</strong>
+                        </h3>
+                    </div>
+                    <h:form id="signupForm">
+                        <div class="col-sm-6 right marginTop-15 paddingLeft-80">
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-12 borderBottom marginBottom-1">
+                            <p:messages id="eventCreationError" showDetail="true"/>
+                        </div>
+                        <div class="col-sm-12 navbar navbar-default container-fluid navbar-header">
+                            <div class="col-sm-6">
+                                <h3>
+                                    <strong>
+                                        <span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span>
+                                        &nbsp; Event Details
+                                    </strong>
+                                </h3>
+                                <br/><br/>
+                                <p>
+                                    <strong>Event Title</strong>
+                                </p>
+                                
+                                <p:inputText id="eventTitle" class="col-sm-11" placeholder="Give it a short meaningful name" value="#{creationEventBean.event.name}" maxlength="40" required="true" requiredMessage="Event name is a mandatory field">
+                                    <p:ajax event="blur" update="errorName"/>
+                                </p:inputText>
+                                <p:message id="errorName" for="eventTitle" display="icon" ></p:message>                
+
+                                <br/><br/><br/>
+                                <p>
+                                    <strong>Location</strong>
+                                </p>
+                                <p:inputText id="address" class="col-sm-11" placeholder="City" onblur="UpdateMap('signupForm','map-canvas','address','street','number','lat_long')" onfocus="resetFields()" value="#{creationEventBean.location.city}" required="true" requiredMessage="City is a mandatory field">
+                                    <p:ajax event="blur" update="errorCity"/>
+                                </p:inputText>
+                                <div class="col-sm-11" style="margin-top:5px; margin-bottom:5px">
+                                    <p:message id="errorCity" for="address" />
+                                </div>
+                                
+                                <br/><br/>
+                                <p:inputText id="street" class="col-sm-11" placeholder="Address" onblur="UpdateMap('signupForm','map-canvas','address','street','number','lat_long')" value="#{creationEventBean.location.street}">
+                                </p:inputText>
+                                <br/><br/>
+                                <p:inputText id="number" class="col-sm-11" placeholder="Number" onblur="UpdateMap('signupForm','map-canvas','address','street','number','lat_long')" value="#{creationEventBean.location.number}">
+                                </p:inputText>
+                                <br/><br/>
+                                <h:inputHidden id="lat_long" class="col-sm-11" value="#{creationEventBean.location.coordinates}"/>
+                                <h:inputHidden id="address_default" value="Milano" />
+                                <h:inputHidden id="lat_long_default" value="(45.4773, 9.1815)" />
+                                <p:selectOneRadio id="indoooroutdoor" value="#{creationEventBean.event.isOutdoor}" class="littleFont" onchange="enableDisableMeteoSettings()" required="true" requiredMessage="City is a mandatory field">
+                                    <f:selectItem itemLabel="&nbsp;Indoor&nbsp;" itemValue="false"/>&nbsp;&nbsp;
+                                    <f:selectItem itemLabel="&nbsp;Outdoor" itemValue="true"/>
+                                    <p:ajax event="blur" update="errorLoc"/>
+                                </p:selectOneRadio>
+                                <p:message id="errorLoc" for="indoooroutdoor" display="icon"></p:message>
+
+                                <br/>
+                                <p:inputTextarea id="extraInfo" class="col-sm-11" placeholder="Additional location info" value="#{creationEventBean.location.extraInfo}" maxlength="40">
+                                </p:inputTextarea>
+                                <br/><br/><br/><br/><br/>
+                                <div id="oldTime">
+                                    <p class="col-sm-5">
+                                        <strong>Starts</strong>
+                                    </p>
+                                    <p class="col-sm-6 left">
+                                        <strong>Ends</strong>
+                                    </p>
+                                    <p:calendar id="startsAt" class="col-sm-5" placeholder="Start date" pattern="dd/MM/yyyy HH:mm" value="#{creationEventBean.fromRep}" required="true" requiredMessage="Starting date is a mandatory field">
+                                    </p:calendar>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <p:calendar id="endsAt" class="col-sm-6" placeholder="End date" pattern="dd/MM/yyyy HH:mm" value="#{creationEventBean.toRep}" required="true" requiredMessage="Ends date is a mandatory field">
+                                    </p:calendar>
+                                </div>
+                                <div id="rep" class="col-sm-11" style="display:none">
+                                    Repeatable event. Click on button below for details<br/>
+                                    <a onclick="resetRepeatEvent()">Undo</a>
+                                </div>
+                                <br/><br/><br/>
+                                <a data-toggle="modal" data-target="#repeats" class="col-sm-5">
+                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> This event repeats
+                                </a> &nbsp;&nbsp;
+                                <div class="modal fade" id="repeats" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">Schedule dates</h4>
+                                        </div>
+                                        <h5>
+                                            <strong> &nbsp; How frequent does your event repeat ?</strong>
+                                        </h5>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <p:selectOneRadio id="customRadioRepeats" layout="custom" value="#{creationEventBean.frequence}">
+                                            <f:selectItem itemLabel="Daily" itemValue="1" />
+                                            <f:selectItem itemLabel="Weekly" itemValue="7" />
+                                        </p:selectOneRadio>
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <p:radioButton id="opt1R" for="customRadioRepeats" itemIndex="0" />
+                                            <h:outputLabel for="opt1R" value="Daily" />
+
+                                            <p:radioButton id="opt2R" for="customRadioRepeats" itemIndex="1" />
+                                            <h:outputLabel for="opt2R" value="Weekly" />
+                                        </h:panelGrid>
+                                        <h:inputHidden id="repeatText" value="#{creationEventBean.repeatEvent}" />
+                                        <br/>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="openRepeatDiv()">Apply</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div><br/><br/>
+                                <!--
+                                <a data-toggle="modal" data-target="#timeZone" class="col-sm-6">
+                                    <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> TimeZone and date settings(CET)
+                                </a>
+                                <br/><br/><br/>
+                                <div class="modal fade" id="timeZone" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">Select the timezone of your event</h4>
+                                        </div>
+                                        
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="openRepeatDiv()">Apply</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                -->
+                                <p>
+                                    <strong>Description</strong>
+                                </p>
+                                <p:inputTextarea id="editor" rows="10" cols="100" placeholder="Tell your friends some details about the event" value="#{creationEventBean.event.description}" maxlength="100"/><br/><br/>
+                                <a data-toggle="modal" data-target="#FAQs" class="col-sm-6">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add FAQs
+                                </a><br/><br/><br/>
+                                <h:inputHidden class="col-sm-11" id="avatarBase64" value="#{registrationBean.user.avatarString}"/>
+                                <div class="modal fade" id="FAQs" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                          <h4 class="modal-title" id="myModalLabel">FAQs for your attendees</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                          Increase sales and ensure your event runs smoothly by adding FAQs.<br/><br/>
+                                          <b>Common questions about the event</b><br/>
+                                          <div class="checkbox">
+                                            <label><input id="FAQ1" type="checkbox"/>Are there ID requirements or an age limit to enter the event?</label>
+                                          </div>
+                                          <div class="checkbox">
+                                            <label><input id="FAQ2" type="checkbox" value="1"/>What are my transport/parking options getting to the event?</label>
+                                          </div>
+                                          <div class="checkbox">
+                                            <label><input id="FAQ3" type="checkbox" value="1"/>What can/can't I bring to the event?</label>
+                                          </div>
+                                          <div class="checkbox">
+                                            <label><input id="FAQ4" type="checkbox" value="1"/>Where can I contact the organiser with any questions?</label>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="fillDescription()">Add FAQs</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                                <input id="socialCheck" type="checkbox" onchange="disableSocialFields()">Include links to Facebook and Twitter</input><br/><br/>
+                                <p:inputText id="facebook" class="col-sm-11" placeholder="Facebook Link" value="#{creationEventBean.event.facebookLink}"></p:inputText><br/><br/>
+                                <p:inputText id="twitter" class="col-sm-11" placeholder="Twitter Link" value="#{creationEventBean.event.twitterLink}"></p:inputText><br/><br/>
+                            </div>
+                            <div class="col-sm-6">
+                                <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                                <div id='map-canvas'>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="meteoDiv" class="col-sm-12 navbar navbar-default container-fluid navbar-header">
+                            <h3>
+                                <strong>
+                                    <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>&nbsp; Meteo Settings for outdoor events
+                                </strong>
+                            </h3>
+                            Select the condition above which you can be notified (i.e. select 'Rain' if you want to be notified in case of rain or worse, according to the weather trigger provided) <br/><br/>
+                            <p:outputPanel id="customPanel"  style="margin-bottom:10px">
+                                <p:selectOneRadio id="customRadio" value="#{creationEventBean.meteoTrigger}" layout="custom">
+                                    <f:selectItem itemLabel="Sun" itemValue="0"/>
+                                    <f:selectItem itemLabel="Clouds" itemValue="1"/>
+                                    <f:selectItem itemLabel="Rain" itemValue="2"/>
+                                    <f:selectItem itemLabel="Thunder" itemValue="3"/>
+                                    <f:selectItem itemLabel="Snow" itemValue="4"/>
+                                    <f:selectItem itemLabel="No Matter" itemValue="5"/>
+                                </p:selectOneRadio>
+                                <h:panelGrid columns="2" cellpadding="7">
+                                    <p:radioButton id="opt2" for="customRadio" itemIndex="1" />
+                                    <strong>&nbsp; CLOUDS &nbsp; <span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>&nbsp;</strong>
+                                    <p:radioButton id="opt3" for="customRadio" itemIndex="2" />
+                                    <strong>&nbsp; RAIN &nbsp; <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>&nbsp;</strong>
+                                    <p:radioButton id="opt4" for="customRadio" itemIndex="3" />
+                                    <strong>&nbsp; THUNDER &nbsp; <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>&nbsp;</strong>
+                                    <p:radioButton id="opt5" for="customRadio" itemIndex="4" />
+                                    <strong>&nbsp; SNOW &nbsp; <span class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span>&nbsp;</strong>
+                                    <p:radioButton id="opt6" for="customRadio" itemIndex="5" />
+                                    <strong>&nbsp; NO MATTER &nbsp;</strong>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </div>
+                        <div class="col-sm-12 navbar navbar-default container-fluid navbar-header">
+                            <h3><strong><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp; Additional Settings</strong></h3><br/><br/>
+                            <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="1">
+                                <p:outputLabel for="console" value="Listing Privacy: "/>
+                                <p:selectOneRadio id="console" value="#{creationEventBean.event.isPublic}" required="true" requiredMessage="Privacy settings are a mandatory field">
+                                    <f:selectItem itemLabel=" Private &nbsp;" itemValue="false"/>
+                                    <f:selectItem itemLabel=" Public" itemValue="true"/>
+                                    <p:ajax event="blur" update="errorPr"/>
+                                </p:selectOneRadio>
+                                <p:message id="errorPr" for="console" display="icon"></p:message>
+                            </h:panelGrid>
+                        </div>
+                        <div class="col-sm-2">
+                            <p:commandButton type="submit" value="CREATE EVENT" class="btn btn-danger col-sm-12" update="signupForm" action="#{creationEventBean.create()}" id="save"/>
+                            <br/><br/>
+                        </div>
+
+                    </h:form>
+                </div> 
+            </ui:define> 
+        <script src="resources/js/base64Encoding.js"></script>
+    </ui:composition>
+</html>

@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"  lang="en"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <!--Page title-->
+        <title><ui:insert name="title">MeteoCal</ui:insert></title>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <!--Stylesheets-->
+        <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../resources/css/default.css"/>
+        <link rel="shortcut icon" href="../resources/images/favicon.ico" type="image/x-icon"/> 
+
+        <link rel="stylesheet" href="../resources/css/cssLayout.css"/>
+        <ui:insert name="style"></ui:insert>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"/> 
+        <style>
+            .ui-style,  .ui-button, .ui-widget, .ui-state-default, .ui-corner-all, .ui-button-text-only, .ui-state-hover {
+               -webkit-box-shadow: none!important;
+               -moz-box-shadow: none!important;
+                box-shadow:none!important;      
+              
+            }
+            .ui-button-text, .ui-c{ padding: 0!important; font-size:13px;}
+        </style>
+        
+        <!--Javascript-->
+        <!--<script src="../resources/js/jquery.min.js"></script>-->
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        
+        
+        <script src="../resources/js/bootstrap.min.js"></script>
+        <script src="../resources/js/interface.js"></script> 
+        <script type="text/javascript">
+            
+            if(#{!userBean.sessionValid()}) {
+                        window.location = "http://localhost:8080/meteocal/faces/index.xhtml?message=sessionExpired";
+             }
+                    
+                    
+            function resize() {
+                var leftH = $("#leftPanel").height();
+                var rightH = $("#rightPanel").height();
+                if(leftH>=rightH) $("#rightPanel").height(leftH);
+                else $("#leftPanel").height(rightH);
+                $("#colorContainer").height($("#rightPanel").height());
+             }                  
+                
+             
+              
+            $( document ).ready(function() {              
+                //<![CDATA[
+                 $("#meteoBox").hide();
+                
+                $("#meteoBox").fadeIn(1000);
+                
+    
+                var city ="#{userBean.currentUser.location.city}";
+                var temp ="#{userBean.currentUser.weather.temperature}";
+                var hum="#{userBean.currentUser.weather.humidity}";
+                var weather="#{userBean.currentUser.weather.weather}";
+                
+                var mySpan = document.getElementById('weather').innerHTML;
+                mySpan += 'Roma';
+                if(weather !=="Nan" || weather !=="Not Available yet")
+                    document.getElementById('weather').innerHTML = city+" , "+(Math.round( temp * 10 ) / 10)+"°C , "+hum+"% ";               
+                else
+                    document.getElementById('weather').innerHTML = city+" , - °C , - % ";               
+
+                var time=new Date;
+                var hour=time.getHours();
+                switch(weather){
+                    case "Clear":
+                        if(hour>=6 && hour<=17){
+                            document.getElementById('meteoBox').style.backgroundImage="url(http://www.nationalweatherstation.com/wp-content/uploads/2014/05/sunny-sky.jpg)";
+                        }else{
+                            document.getElementById('meteoBox').style.backgroundImage="url(http://hdwallpaper.freehdw.com/0001/nature-landscapes_widewallpaper_magic-night_3524.jpg)";
+                        }
+                        break;
+                    case "Clouds":
+                        document.getElementById('meteoBox').style.backgroundImage="url(http://cdn1.landscapehdwalls.com/thumbs/1/cloudy-mountain-lake-610-706.jpg)";
+                        break;
+                    case "Mist":
+                        document.getElementById('meteoBox').style.backgroundImage="url(http://www.kichumichu.com/wp-content/uploads/2014/09/Good-Morning-Rainy-Day-Wishes-Picture.jpeg)";
+                        break;
+                    case "Snow":
+                        document.getElementById('meteoBox').style.backgroundImage="url(http://www.desktopaper.com/wp-content/uploads/lovely-snowing-wallpaper.jpg)";
+                        break;
+                    case "Rain":
+                        document.getElementById('meteoBox').style.backgroundImage="url(http://24.media.tumblr.com/tumblr_mbyaurBBzu1r9xjxoo1_500.gif)";
+                        break;
+                }
+                        
+            //]]> 
+                $(document).change(resize);
+                $(document).ready(resize);
+            });
+            
+        </script>
+        <ui:insert name="javascript"></ui:insert>
+        
+    </h:head>
+
+    
+    <h:body>
+   
+        <!--Header: black bar cointaiining search, notifications, user info-->
+        <header class="navbar navbar-static-top bs-docs-nav" id="navBar" role="banner">
+            
+            <a class=" btn navEl left" href="/meteocal/faces/user/home.xhtml" style="font-family: 'Lobster'; font-size: 40px; margin-left:20px; margin-top:-5px; color:white;">
+                <b>MeteoCal</b>
+            </a>
+            
+            <div class="navEl left">
+           
+                <div class="input-group" id="searchBar">
+                    <input type="text" class="form-control dropdown-toggle" placeholder="Search users" id="searchInputNav"/>
+                    <span class="input-group-addon" id="lensNav">
+                        <span class="glyphicon glyphicon-search" ></span>
+                    </span>
+                </div>
+                
+                <!--Results-->
+                 <div class="panel panel-default  appearingBox" id="searchResultsBoxNav" style="margin-left:45px">
+                   <!--Fill with results-->                   
+                 </div>
+                  
+            </div>
+            
+            <div class="navEl right">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <div class="navButton">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </div>
+                </a>
+                
+                <!--User box-->
+                 <div class="panel panel-default dropdown-menu appearingBox" id="userBox">
+                   
+                    <div class="row">
+                        <!--User Avatar-->
+                        <div class="col-md-4">
+                            <img src="#{userBean.avatar}" class="avatarSmall" />
+                        </div>
+                        <div class="col-md-8">
+                            
+                            <h5>#{userBean.name}</h5>
+                            <h:form>
+                            <a class="btn btn-success btn-sm" href= "myprofile.xhtml">My Profile</a>
+                            <p:commandButton class="btn btn-danger btn-sm" action="#{loginBean.logout()}" style="margin-left:3px" value="Logout"></p:commandButton>
+                            </h:form>
+                        </div>
+                    
+                    </div>
+                 </div>
+            </div>
+            
+           <!--Notifications--> 
+           <div class="navEl right" >
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <div class="navButton">
+                        <span class="glyphicon glyphicon-envelope"></span>
+                        <span id="messageBadge" class="badge" ></span>
+                    </div>
+                </a>
+               
+               <!--Notifications container-->
+                <div class="panel panel-default dropdown-menu appearingBox" id="messageBox">
+                   
+                    <div class="panel-heading">Notifications</div>
+                    
+                    <div class="list-group">
+                    
+                        <div class="list-group" style="margin:0;" id="notList">
+                            <span class="list-group-item"> No notification available. </span>
+                            <!--Filled with notifications-->
+                        </div>
+                        <div onclick="document.location = 'notifications.xhtml'" id="viewAll">
+                            <span> View All</span>
+                        </div>
+                    </div>
+                </div>
+               
+                
+            </div>
+              
+        </header>
+
+        <!--MeteoBox: space with background and local weather information-->
+        <div id="meteoBox" >
+            <div id="blurred" class='col-sm-12'>
+                <div class='col-sm-3'></div>
+                <div class='col-sm-12' style='text-align:center'>
+                    <span class="weather" id="weather" ></span>
+                </div>
+                <div class='col-sm-3'></div>
+                
+            </div> 
+        </div>
+    
+        <!--Breadcrumbs-->
+        <ol class="breadcrumb" id="breadcrumbs">
+            <ui:insert name="breadcrumbs">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Library</a></li>
+                <li class="active">Data</li>
+            </ui:insert>
+        </ol>
+       
+        <div id="extraSpace"></div>
+        
+        <!--Contents area-->
+        <div  id="contentArea"><!-- offset row negative padding -->
+            <div class="row" style="min-width:1270px; overflow: hidden;">
+                <div class="col-md-2" id="leftPanel" style="margin-left:15px">
+                    <!--Left-->
+                    <ui:insert name="left" >
+                        Left bar
+                    </ui:insert>
+                </div>
+                
+                <div class="col-md-10" id="rightPanel">
+                    <!--Right-->
+                    <ui:insert name="right" >
+                        
+                    </ui:insert>
+                </div>
+            </div>
+        </div>
+        <section  id="templateFooter">
+            <center>
+                <font color="white">
+                    Team Developers: Andrea Gulino, Paolo Guglielmino, Alessandro Negrini<br/><br/>
+                    © 2015 MeteoCal PoliMi, Inc. All Rights Reserved.
+                </font>
+            </center>
+        </section>
+
+
+    </h:body>
+
+</html>

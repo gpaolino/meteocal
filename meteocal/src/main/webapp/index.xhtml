@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en-us"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MeteoCal</title>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon"/> 
+        <link href="resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="resources/css/myStyle.css" rel="stylesheet"/>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"/>        
+        <link href='http://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'/>  
+        <link href="resources/css/scrolling-nav.css" rel="stylesheet"/>
+        <script>
+             if(#{userBean.sessionValid()}) {
+                        window.location = "http://localhost:8080/meteocal/faces/user/home.xhtml";
+             }
+             
+             //For testing
+             $(document).ready( function() {
+                 var username = "#{userBean.username}";
+                 var password = "#{userBean.password}";
+                 if( username !== "" ){
+                   document.getElementById("loginForm:j_idt8").value = username;
+                    document.getElementById("loginForm:j_idt10").value = password;
+                    document.getElementById("loginForm:j_idt12").click();
+                 }
+             });
+             
+        </script>
+    </h:head>
+    <h:body>
+        <section id="imageSection">
+            <div id="blurred">
+                <header class="navbar navbar-static-top bs-docs-nav blackTransparency" id="top" role="banner">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="" class="navbar-brand logoFont logoSettings"><font size="10" color="white"><b>MeteoCal</b></font></a>
+                        </div>
+                        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                            <ul class="nav navbar-nav navbar-right lobsterFont">
+                                <li><a href="#whySection" onclick="" class="page-scroll"><font color="white" size="4">WHY</font></a></li>
+                                <li><a href="https://code.google.com/p/meteocal-guglielmino-gulino-negrini/source/checkout" onclick=""><font color="white" size="4">CODE</font></a></li>
+                                <li><a href="https://code.google.com/p/meteocal-guglielmino-gulino-negrini/" onclick=""><font color="white" size="4">DOCUMENTATION</font></a></li>
+                                <li><a href="#contactSection" onclick="" class="page-scroll"><font color="white" size="4">CONTACTS</font></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+                <div class="bs-docs-featurette">
+                    <div class="container">
+                        <div class="col-sm-8 jumbotron whiteText transparent">
+                            <h1 class="whiteText">Welcome !</h1>
+                            <p class='ralewayFontText'>Create your own agenda and starts creating new events. MeteoCal allows you to organize events 
+                                avoiding bad weather conditions for outdoor events. <br/>
+                                Invite friends to your events - and other fascinating people. <br/>
+                                Create your own network of friends and enjoy MeteoCal</p>
+                            <p><a class="btn btn-primary btn-lg page-scroll" href="#threePointSection" role="button">Learn more</a></p>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default panel-body marginTop-4">
+                                <p>
+                                    <h:form id="loginForm">
+                                        <p:inputText placeholder="Email" class="col-sm-12 ralewayFontText" value="#{loginBean.username}"></p:inputText><br/><br/>
+                                        <p:password size="20" placeholder="Password" class="col-sm-12 ralewayFontText" value="#{loginBean.password}"></p:password><br/><br/>
+                                        <p:messages id="loginMessages" showDetail="true"/>
+                                        <p:commandButton value="Log in" style="background:#337AB7" update="loginForm" class="col-sm-12 non-selected-button-background-color" action="#{loginBean.login()}" type="submit"></p:commandButton><br/>
+                                            <br/>
+                                            <a href="faces/forgotPassword.xhtml"><font size="1">Forgot my password</font></a>
+                                    </h:form>
+                                </p>
+                            </div>
+                            <div class="panel panel-primary marginBottom-6">
+                                <div class="panel-heading"><font size="4"><b>New to MeteoCal?</b><font class="ralewayFontText"> Sign up</font></font></div>
+                                <div class="panel-body">
+                                    <h:form id="signupForm">
+                                        <p>
+                                            <p:inputText id="sname" placeholder="Full Name / Company " class="col-sm-12 ralewayFontText" value="#{fromHomeToSignUp.name}" required="true" requiredMessage="Insert your name"></p:inputText><br/><br/>
+                                            <p:inputText id="semail" placeholder="Email" class="col-sm-12 ralewayFontText" value="#{fromHomeToSignUp.email}" required="true" requiredMessage="Insert your email">
+                                                <f:validateRegex pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"/>
+                                                <f:validator validatorId="uniqueEmail"/>
+                                                <p:ajax update="emailError" event="blur" />
+                                            </p:inputText><br/><br/>
+                                            <p:messages class="littleFont" id="emailError" for="semail"/>
+                                            <p:password id="spassword" placeholder="Password" class="col-sm-12 ralewayFontText" value="#{fromHomeToSignUp.password}" required="true" requiredMessage="Insert your password">
+                                                <p:ajax update="loginError" event="blur" />
+                                            </p:password><br/><br/>
+                                            <p:messages class="littleFont" id="loginError" for="spassword"/>
+                                            <p:commandButton class=" col-sm-12 backgroundYellow" value="Sign up now" action="#{fromHomeToSignUp.goToSignUp()}" update="signupForm"></p:commandButton>
+                                        </p>
+                                    </h:form>
+                                </div>
+                            </div>              
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="backgroundLGrey" id="threePointSection">
+            <div class="container">
+                <div class="col-sm-4 thumbnail backgroundLGrey noborder marginTop-6 marginBottom-15">
+                    <img src="resources/images/friends.png" width="60%" height="60%"/>
+                    <div class="caption">
+                        <h3 class="textBlue"><center><font size="6">MEET FRIENDS AND ENJOY</font></center></h3>
+                        <p><center><font size='5' class="ralewayFontText">Schedule your events and invite friends to attend them. </font></center></p>
+                    </div>
+                </div>
+                <div class="col-sm-4 thumbnail backgroundLGrey noborder marginTop-6 marginBottom-15">
+                    <img src="resources/images/share.png" width="60%" height="60%"/>
+                    <div class="caption">
+                        <h3 class="textBlue"><center><font size="6">SHARE YOUR EVENTS</font></center></h3>
+                        <p><center><font size='5' class="ralewayFontText">Share your calendar (events) with other MeteoCal users to make it (them) visible to everyone.  </font></center></p>
+                    </div>
+                </div>  
+                <div class="col-sm-4 thumbnail backgroundLGrey noborder marginTop-6 marginBottom-15">
+                    <img src="resources/images/notifications.png" width="60%" height="60%"/>
+                    <div class="caption">
+                        <h3 class="textBlue"><center><font size="6">BE ALWAYS SURE<br/><br/></font></center></h3>
+                        <p><center><font size='5' class="ralewayFontText">MeteoCal will notify you in case bad weather condition is expected during an outside event</font></center></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="whySection">
+            <div id="polimi" class="jumbotron backgroundBlue logoPoliMI marginBottomNull">
+                <center>
+                    <h1><font color="white">MeteoCal</font></h1><br/>
+                    <p>SOFTWARE ENGINEERING 2 PROJECT A.A 2014/2015</p>
+                    <p><font size="3">Politecnico di Milano</font></p><br/><br/>
+                    <p style="width:85%">
+                        <font class="ralewayFontText whiteText justifiedText" size="5">
+                            We want to offer a new weather based online calendar for helping people scheduling their personal events avoiding bad weather conditions in case of outdoor activities. Users, once registered, should be able to create, delete and update events. An event should contain information about when and where the event will take place, whether the event will be indoor or outdoor. During event creation, any number of registered users can be invited. Only the organizer will be able to update or delete the event. Invited users can only accept or decline the invitation.
+                            Whenever an event is saved, the system should enrich the event with weather forecast information (if available). Moreover, it should notify all event participants one day before the event in case of bad weather conditions for outdoor events. Notifications are received by the users when they log into the system.
+                        </font>
+                    </p>
+                </center>
+            </div>
+        </section>
+        <section id="contactSection" class="backgroundLGrey">
+            <div class="container">
+                <div class="col-sm-6 marginPaddingTop-0">
+                    <img src="resources/images/contacts.png" height="100%" width="100%"/>
+                </div>
+                <div class="col-sm-6 marginTop-2">
+                    <div class="panel">
+                        <div class="panel-heading backgroundBlack"><h3><font color="white">FEEL FREE TO CONTACT US</font></h3></div>
+                        <div class="panel-body">
+                            <h:form role="form" id="feedbackForm">
+                                <p:messages id="mailMessage"/>
+                                <div class="form-group">
+                                    <p:inputText type="text" class="form-control ralewayFontText" id="name" value="#{mail.name}" placeholder="Please enter your name"/>
+                                </div>
+                                <div class="form-group">
+                                    <p:inputText type="email" class="form-control ralewayFontText" id="email" value="#{mail.from}" placeholder="Please enter a valid e-mail address" validatorMessage="Enter a valid email">
+                                        <f:validateRegex pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"/>
+                                        <p:ajax update="emailError" event="blur" />
+                                    </p:inputText>
+                                    <p:messages class="littleFont" id="emailError" for="email"/>
+                                </div>
+                                <div class="form-group">
+                                    <p:inputTextarea rows="10" cols="100" class="form-control ralewayFontText" id="message" value="#{mail.message}" placeholder="Please enter a message"/>
+                                </div>
+                                <p:commandButton type="submit" id="feedbackSubmit" update="feedbackForm" value="Send Mail" class="btn btn-primary btn-lg backgroundBlack marginTop-1 buttonMail" action="#{mail.send()}"></p:commandButton>
+                            </h:form>
+                        </div>
+                    </div>			
+                </div>
+            </div>
+        </section>
+        <section class="backgroundBlack ralewayFontText">
+                        <center>
+                <font color="white">
+                                    Team Developers: Andrea Gulino, Paolo Guglielmino, Alessandro Negrini<br/><br/>
+                                    © 2015 MeteoCal PoliMi, Inc. All Rights Reserved.
+                </font>
+                            </center>
+                    </section>
+        <script src="resources/js/bootstrap.min.js"></script>
+        <script src="resources/js/jquery.easing.min.js"></script>
+        <script src="resources/js/scrolling-nav.js"></script>    
+        <script>
+            $(document).ready(function () {
+                $('#signupForm\\:sname').val("");
+                $('#signupForm\\:semail').val("");
+                $('#signupForm\\:spassword').val("");
+            });
+        </script>
+    </h:body>
+
+</html>
+
+
+

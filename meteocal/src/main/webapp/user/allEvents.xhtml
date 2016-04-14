@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="../resources/templates/newTemplate.xhtml">   
+            <ui:define name="title">
+               All My Events
+            </ui:define>
+            
+            <ui:define name="style">
+                <link href='http://fonts.googleapis.com/css?family=Roboto:100' rel='stylesheet' type='text/css'/>  
+                <link rel="stylesheet" href="../resources/css/inTemplateStyle.css" />
+            </ui:define>
+
+            <ui:define name="javascript">
+                <script type="text/javascript" src="../resources/js/underscore-min.js"></script>
+                <script type="text/javascript" src="../resources/js/calendar.js"></script>
+                <script type="text/javascript" src="../resources/js/getImage.js"></script>
+                <!--Initialization of weather info-->
+                <script>
+                    $(document).ready(function() {                    
+                        simpleInterface();
+                    });
+                </script> 
+                      
+            </ui:define>
+                     
+            <ui:define name="breadcrumbs">
+                <li><a href="home.xhtml">Home</a></li>
+                <li class="active">All My Events</li>
+            </ui:define>
+            
+            <ui:define name="left">
+                <div class="list-group">
+                    <a  id="btn0" class="list-group-item active">All My Events</a>
+                </div>
+            </ui:define>
+            
+            <ui:define name="right">
+                <div class="col-sm-12" align="center">
+                    <h1>
+                        <strong>ALL MY EVENTS</strong>
+                    </h1>
+                    <br/><br/>
+                </div>
+                
+                <div id="allEvents" class="col-sm-12 scrollable" style="height:350px" align="center">
+                    <h:form id="eventsForm">
+                        <p:dataTable value="#{allMyEvents.events}" var="e" styleClass="order-table" emptyMessage="No events.">
+                            <p:column headerText="From" class="col-sm-3">#{e.startsAt}</p:column>ize() > 0)==true}"
+                            <p:column headerText="To" class="col-sm-3">#{e.endsAt}</p:column>
+                            <p:column headerText="City" class="col-sm-1">#{e.location.city}</p:column>
+                            <p:column headerText="Event Name" class="col-sm-3" style="text-align: right">
+                                <a href="event.xhtml?id=#{e.id}">#{e.name}</a>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form><br/>
+                </div>
+            </ui:define> 
+        <script src="resources/js/base64Encoding.js"></script>
+    </ui:composition>
+</html>

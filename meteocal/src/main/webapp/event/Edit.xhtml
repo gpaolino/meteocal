@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EventEditDlg" widgetVar="EventEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditEventTitle}">
+            <h:form id="EventEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{eventController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditEventLabel_facebookLink}" for="facebookLink" />
+                        <p:inputText id="facebookLink" value="#{eventController.selected.facebookLink}" title="#{bundle.EditEventTitle_facebookLink}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_twitterLink}" for="twitterLink" />
+                        <p:inputText id="twitterLink" value="#{eventController.selected.twitterLink}" title="#{bundle.EditEventTitle_twitterLink}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{eventController.selected.id}" title="#{bundle.EditEventTitle_id}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{eventController.selected.name}" title="#{bundle.EditEventTitle_name}" required="true" requiredMessage="#{bundle.EditEventRequiredMessage_name}"/>
+                        <p:outputLabel value="#{bundle.EditEventLabel_description}" for="description" />
+                        <p:inputText id="description" value="#{eventController.selected.description}" title="#{bundle.EditEventTitle_description}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_startsAt}" for="startsAt" />
+                        <p:calendar id="startsAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventController.selected.startsAt}" title="#{bundle.EditEventTitle_startsAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditEventLabel_endsAt}" for="endsAt" />
+                        <p:calendar id="endsAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventController.selected.endsAt}" title="#{bundle.EditEventTitle_endsAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditEventLabel_isPublic}" for="isPublic" />
+                        <p:selectBooleanCheckbox id="isPublic" value="#{eventController.selected.isPublic}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_isOutdoor}" for="isOutdoor" />
+                        <p:selectBooleanCheckbox id="isOutdoor" value="#{eventController.selected.isOutdoor}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_isCanceled}" for="isCanceled" />
+                        <p:selectBooleanCheckbox id="isCanceled" value="#{eventController.selected.isCanceled}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_notIfTrigger}" for="notIfTrigger" />
+                        <p:inputText id="notIfTrigger" value="#{eventController.selected.notIfTrigger}" title="#{bundle.EditEventTitle_notIfTrigger}" />
+                        <p:outputLabel value="#{bundle.EditEventLabel_user}" for="user" />
+                        <p:selectOneMenu id="user" value="#{eventController.selected.user}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{userController.itemsAvailableSelectOne}"
+                                           var="userItem"
+                                           itemValue="#{userItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditEventLabel_location}" for="location" />
+                        <p:selectOneMenu id="location" value="#{eventController.selected.location}" required="true" requiredMessage="#{bundle.EditEventRequiredMessage_location}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{locationController.itemsAvailableSelectOne}"
+                                           var="locationItem"
+                                           itemValue="#{locationItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{eventController.update}" value="#{bundle.Save}" update="display,:EventListForm:datalist,:growl" oncomplete="handleSubmit(args, 'EventEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="EventEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

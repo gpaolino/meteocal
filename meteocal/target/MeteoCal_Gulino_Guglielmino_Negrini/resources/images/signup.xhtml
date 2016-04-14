@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en-us"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MeteoCal</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"/>        
+        <link href='http://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'/>
+        <style>
+          body {
+            font-family: 'Montserrat';
+          }
+          header {background-color:#34302D;}
+          .non-selected-button-background-color {
+                color: white
+           }
+        </style>    
+    </h:head>
+    <h:body>
+        <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+          <div class="container">
+            <div class="navbar-header" style="font-family: 'lobster', serif;">
+                <a href="#" class="navbar-brand"><font size="10" color="white"><b>MeteoCal</b></font></a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav navbar-right">
+                  <li><a href="#" onclick=""><font color="white">WHY</font></a></li>
+                <li><a href="#" onclick=""><font color="white">ABOUT US</font></a></li>
+                <li><a href="#" onclick=""><font color="white">CONTACTS</font></a></li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+    <div class="bs-docs-featurette">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-2">  
+          </div>
+          <div class="col-sm-7">
+           <div class="panel panel-primary">
+               <div class="panel-heading"><center>SUBSCRIPTION</center></div>
+                <div class="panel-body">
+                    <div class="col-sm-1">  
+                    </div>
+                    <div class="col-sm-11">
+                        <h3><center>JOIN METEOCAL RIGHT NOW</center></h3>
+                        <br/><br/>
+                        <h:form>
+                        <div class="col-sm-7" >
+                            <p:inputText id="name" size="45" placeholder="Given name" style="font-family: 'Raleway', serif;" value="#{fromHomeToSignUp.name}"></p:inputText>
+                            <br/><br/>
+                            <p:inputText id="surname" size="45" placeholder="Family name" style="font-family: 'Raleway', serif;"></p:inputText>                        
+                            <br/><br/>                   
+                            <p:inputText id="email" validatorMessage="Invalid email format" size="45" placeholder="email address" style="font-family: 'Raleway', serif;" value="#{fromHomeToSignUp.email}">
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                            </p:inputText>
+                            <br/><br/>
+                            <p:inputText size="45" placeholder="Password" style="font-family: 'Raleway', serif;" value="#{fromHomeToSignUp.password}"></p:inputText> 
+                            <br/><br/>
+                            </div>
+                            <div class="col-sm-3" style="margin-left:50px">
+                             <div class="media">
+                                <a class="media-left" href="#">
+                                    <img src="resources/avatar.png" width="150px" height="150px"/>
+                                </a>
+                              </div><br/>
+                                <p:fileUpload mode="simple" style="font-family: 'Raleway', serif; font-size:13px"></p:fileUpload>
+                            </div>
+                            <div class="col-sm-7" >
+                                <p:password size="45" placeholder="Confirm Password" style="font-family: 'Raleway', serif;"></p:password> 
+                                <br/><br/>
+                                <p:inputText size="45" placeholder="Country" style="font-family: 'Raleway', serif;"></p:inputText>
+                                <br/><br/>
+                                <p:inputText size="45" placeholder="Location" style="font-family: 'Raleway', serif;"></p:inputText>
+                                <br/><br/>
+                                <p:commandButton value="Sign up now" type="submit" style="background:#FFCB4C;width: 340px"></p:commandButton>
+                                <br/><br/>
+                            </div>
+                        </h:form>
+                        <div class="col-sm-11">
+                            <p style="color:lightgray"><font size="1" >By signing up, you agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, including Cookie Use. Others will be able to find you by email or phone number when provided.</font></p>
+                            <h:form>
+                                <h:inputText value="#{myClass.aString()}" />
+                            </h:form>
+                        </div>
+                    </div>  
+                </div>
+
+           </div>              
+          </div>
+          <div class="col-sm-2">
+             
+          </div>
+        </div>
+      </div>
+    </div>
+            
+           
+    </h:body>
+</html>
+

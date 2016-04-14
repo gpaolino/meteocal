@@ -1,0 +1,331 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile">
+    
+    <ui:composition template="../resources/templates/newTemplate.xhtml">
+        
+        <ui:define name="title">
+             Weather Forecasts
+        </ui:define>
+        
+        <ui:define name="breadcrumbs">
+            <li><a href="home.xhtml">Home</a></li>
+            <li class="active">Weather Forecast</li>
+        </ui:define>
+        
+        
+        <ui:define name="style">
+            <style>
+                #searchResultsBoxInv  
+                {   width:458px;
+                    top:45px;
+                    left:0px;}
+                
+            </style>
+            
+            <link href="../resources/css/inTemplateStyle.css" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>
+            <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300,700,400' rel='stylesheet' type='text/css' />
+            <link href="../resources/css/mapStyle.css" rel="stylesheet"/>
+            <link href="../resources/css/bootstrap-switch.css" rel="stylesheet" type="text/css"/>
+
+        </ui:define>
+        
+        <ui:define name="javascript">
+            <script src="../resources/js/bootstrap-switch.js" type="text/javascript"></script>
+            <script src="../resources/js/inviteFriend.js" type="text/javascript"></script>
+            <script type ="text/javascript" >
+                var find=false;
+
+                function set(){
+                    find=false;
+                }
+                window.onload=find;
+                function ChangeBackgroungImageOfTab(a)
+                {
+                    var wet="wet_"+a;
+                    var weather_exp=document.getElementById(wet).textContent;
+                    var hidd="hidden_"+a;
+                    var icon=document.getElementById(hidd).value;
+                    var id="div_"+a;
+                    var divid="current_"+a;
+                    document.getElementById(id).style.backgroundImage="url('http://openweathermap.org/img/w/"+icon+".png')";                  
+                    
+                    if(weather_exp==="Clear"){
+                        if(find===false){
+                            document.getElementById(divid).style.backgroundColor="#FFFFCC";   
+                            find=true;
+                        }
+                    }    
+                }
+                
+                function buildEventLink(){
+                    var idEv = location.search.split('id=')[1];
+                    $('#button0').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(0,0)}"+"&amp;secToShow=2");
+                    $('#button1').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(1,0)}"+"&amp;secToShow=2");
+                    $('#button2').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(2,0)}"+"&amp;secToShow=2");
+                    $('#button3').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(3,0)}"+"&amp;secToShow=2");
+                    $('#button4').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(4,0)}"+"&amp;secToShow=2");
+                    $('#button5').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(5,0)}"+"&amp;secToShow=2");
+                    $('#button6').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(6,0)}"+"&amp;secToShow=2");
+                    $('#button7').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(7,0)}"+"&amp;secToShow=2");
+                    $('#button8').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(8,0)}"+"&amp;secToShow=2");
+                    $('#button9').attr("href","event.xhtml?id="+idEv+"&amp;newStartDate="+"#{fiveDaysForecasts.getData(9,0)}"+"&amp;secToShow=2");
+                }
+                $(document).ready(function() {
+                    buildEventLink();
+                });
+                
+            </script>
+        </ui:define>
+        <ui:define name="left">
+            <div class="list-group">
+                <a  id="btn0" class="list-group-item active">10 Days Forecasts</a>
+            </div>
+        </ui:define>
+            
+        <ui:define name="right">   
+            <div class="col-sm-12">
+                <center><h1>Next ten days weather forecasts in #{fiveDaysForecasts.parameter_value}</h1></center><br/>
+            </div>
+            <div class="col-sm-12 divisor"></div>
+            <div class="col-sm-1"></div>
+            <!--First day-->
+            <div id= "current_0" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel id="date0" value="#{fiveDaysForecasts.getData(0,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                        <div style="display: block; clear: left;" >
+                            <div id="div_e" style="float: left;" title="Titel">
+                            <img id="div_0" height="45" width="45" style="border: medium none;" alt="title" src="http://openweathermap.org/images/transparent.png"/>
+                            </div>
+                            <div style="float: left;" >
+                            <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(0,1)}°C"></p:outputLabel></div>
+                            <div style="display: block; width: 85px; overflow: visible;" >
+                            </div></div></div>
+                            <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_0" value="#{fiveDaysForecasts.getData(0,5)}"></p:outputLabel></div>
+                            <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(0,4)}"></p:outputLabel></div>
+                            <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(0,2)}"></p:outputLabel></div>
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(0,3)}"></p:outputLabel></div>                 
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_0" value="#{fiveDaysForecasts.getData(0,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(0)</script>
+                <a id="button0"><p:button value="Choose this date" class="btn btn-xs btn-primary" /></a><br/><br/>
+            </div>
+            <!--Second day-->
+            <div id= "current_1" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(1,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_1" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(1,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_1" value="#{fiveDaysForecasts.getData(1,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(1,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(1,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(1,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_1" value="#{fiveDaysForecasts.getData(1,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(1)</script>
+                <a id="button1"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_2" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(2,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_2" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(2,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_2" value="#{fiveDaysForecasts.getData(2,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(2,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(2,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(2,3)}"></p:outputLabel></div>                 
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_2" value="#{fiveDaysForecasts.getData(2,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(2)</script>
+                <a id="button2"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_3" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(3,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_3" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(3,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_3" value="#{fiveDaysForecasts.getData(3,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(3,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(3,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(3,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_3" value="#{fiveDaysForecasts.getData(3,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(3)</script>
+                <a id="button3"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_4" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(4,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_4" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(4,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_4" value="#{fiveDaysForecasts.getData(4,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(4,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(4,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(4,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_4" value="#{fiveDaysForecasts.getData(4,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(4)</script>
+                <a id="button4"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>             
+            </div>
+            <div class="col-sm-12"></div><br/><br/>
+            <div class="col-sm-1"></div>
+            <!--First day-->
+            <div id= "current_5" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(5,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                        <div style="display: block; clear: left;" >
+                            <div style="float: left;" title="Titel">
+                            <img id="div_5" height="45" width="45" style="border: medium none;" alt="title" src="http://openweathermap.org/images/transparent.png"/>
+                            </div>
+                            <div style="float: left;" >
+                            <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(5,1)}°C"></p:outputLabel></div>
+                            <div style="display: block; width: 85px; overflow: visible;" >
+                            </div></div></div>
+                            <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_5" value="#{fiveDaysForecasts.getData(5,5)}"></p:outputLabel></div>
+                            <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(5,4)}"></p:outputLabel></div>
+                            <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(5,2)}"></p:outputLabel></div>
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(5,3)}"></p:outputLabel></div>                 
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_5" value="#{fiveDaysForecasts.getData(5,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(5)</script>
+                <a id="button5"><p:button value="Choose this date" class="btn btn-xs btn-primary" /></a><br/><br/>
+            </div>
+            <!--Second day-->
+            <div id= "current_6" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(6,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_6" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(6,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_6" value="#{fiveDaysForecasts.getData(6,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(6,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(6,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(6,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_6" value="#{fiveDaysForecasts.getData(6,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(6)</script>
+                <a id="button6"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_7" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(7,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_7" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(7,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_7" value="#{fiveDaysForecasts.getData(7,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(7,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(7,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(7,3)}"></p:outputLabel></div>                 
+                        <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_7" value="#{fiveDaysForecasts.getData(7,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(7)</script>
+                <a id="button7"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_8" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(8,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_8" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(8,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_8" value="#{fiveDaysForecasts.getData(8,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(8,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(8,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(8,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_8" value="#{fiveDaysForecasts.getData(8,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(8)</script>
+                <a id="button8"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>
+            </div>
+            <div id= "current_9" class="col-sm-2">
+                <div style="font-size: medium; font-weight: bold; margin-bottom: 0px;"><p:outputLabel value="#{fiveDaysForecasts.getData(9,0)}"></p:outputLabel></div> 
+                    <div style="float: left; width: 130px;" >
+                    <div style="display: block; clear: left;" >
+                    <div style="float: left;" title="Titel">
+                    <img id="div_9" height="45" width="45" style="border: medium none; " alt="title" src="http://openweathermap.org/images/transparent.png"/></div>
+                    <div style="float: left;" >
+                    <div style="display: block; clear: left; font-size: medium; font-weight: bold; padding: 0pt 3pt;" title="Current Temperature"><p:outputLabel value="#{fiveDaysForecasts.getData(9,1)}°C"></p:outputLabel></div>
+                    <div style="display: block; width: 85px; overflow: visible;" >
+                    </div></div></div>
+                    <div style="display: block; clear: left; font-size: small;">Weather:<p:outputLabel id="wet_9" value="#{fiveDaysForecasts.getData(9,5)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Humidity: <p:outputLabel value="#{fiveDaysForecasts.getData(9,4)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Min: <p:outputLabel value="#{fiveDaysForecasts.getData(9,2)}"></p:outputLabel></div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" >Max: <p:outputLabel value="#{fiveDaysForecasts.getData(9,3)}"></p:outputLabel></div>                 
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;" > <h:inputHidden id="hidden_9" value="#{fiveDaysForecasts.getData(9,6)}"></h:inputHidden></div>                 
+
+                    </div>
+                    <div style="display: block; clear: left; color: gray; font-size: x-small;">
+                </div><br/>
+                <script>ChangeBackgroungImageOfTab(9)</script>
+                <a id="button9"><p:button value="Choose this date" class="btn btn-xs btn-primary"/></a><br/><br/>             
+            </div>
+        </ui:define>  
+    </ui:composition>
+
+</html>
+
+

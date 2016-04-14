@@ -1,0 +1,95 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 17, 2014, 9:45:55 AM
+    Author     : alessandronegrini
+*/
+
+.divisor{
+    width:100%;
+    height:80px;
+    border-bottom: 1px;
+    border-bottom-color: #999;
+}
+
+.eventTitle{
+    font-family: 'Roboto';
+ 
+    margin-top:15px!important;
+    margin-bottom: 10px!important;
+    font-size: 25px; 
+    font-weight: 500; 
+}
+
+#imagePreview{ 
+    max-width: 150px; 
+    max-height: 150px;
+}
+
+.circleBase {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.robotoFontText{
+    font-family: 'Roboto',serif;
+}
+
+.blueFont{
+    color:#337ab7;
+}
+.grayFont{
+    color:#999;
+}
+
+.top{
+    vertical-align: top;
+}
+
+.right{
+    float:right;
+}
+
+.paddingLeft-80{
+    padding-left: 250px;
+}
+
+.marginTop-15{
+    margin-top: 15px;
+}
+
+.ralewayFontText{
+    font-family: 'Raleway', serif; 
+}
+
+
+.eventDescription{
+    font-size:10px;
+    font-family: 'Roboto',serif;
+    color: #999;
+}
+
+.eventAddress{
+    font-size: 30px;
+    color: #337ab7;
+}
+
+.eventCity{
+    font-size: 40px;
+    color: #c9302c;
+}
+
+.eventDescriptionA{
+    font-size: 20px;
+    color: #5cb85c;
+}
+
+#map-canvas
+{
+    width : 380px; 	/* map width */
+    height: 250px;	/* map height */
+}
+

@@ -1,0 +1,15 @@
+body {
+    margin:0;
+    font-family:  'Roboto', 'Helvetica Neue';
+    zoom: 90%;
+}
+
+a {
+    cursor:pointer;
+}
+
+ul {
+      list-style-type: none;
+}
+
+button:focus {outline:0!important;}

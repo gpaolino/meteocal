@@ -1,0 +1,260 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en-us"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>MeteoCal</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon"/> 
+        <link href="resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="resources/css/myStyle.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/>        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"/>        
+        <link href='http://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'/>
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+        <script src="resources/js/bootstrap.min.js"></script>
+        <script src="resources/js/newMap.js" type="text/javascript"></script>
+        
+        <script>
+            var name = "#{fromHomeToSignUp.name}";
+            var email = "#{fromHomeToSignUp.email}";
+            var password = "#{fromHomeToSignUp.password}";
+                        
+            $(document).ready(function(){
+            $("#signupForm\\:givenName").val(name);
+            $("#signupForm\\:email").val(email);
+            $("#signupForm\\:password").val(password);
+            showMap('signupForm','map-canvas','address_default','','','lat_long_default');
+            });
+            
+        </script>
+    </h:head>
+    <h:body>
+        <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+          <div class="container">
+            <div class="navbar-header marginTop-1">
+                <a href="." class="navbar-brand logoFont"><font size="10" color="white"><b>MeteoCal</b></font></a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse marginTop-1" role="navigation">
+                <ul class="nav navbar-nav navbar-right lobsterFont">
+                    <li><a href="#whySection" onclick=""><font color="white" size="4">WHY</font></a></li>
+                    <li><a href="https://code.google.com/p/meteocal-guglielmino-gulino-negrini/source/checkout" onclick=""><font color="white" size="4">CODE</font></a></li>
+                    <li><a href="https://code.google.com/p/meteocal-guglielmino-gulino-negrini/" onclick=""><font color="white" size="4">DOCUMENTATION</font></a></li>
+                    <li><a href="#contactSection" onclick=""><font color="white" size="4">CONTACTS</font></a></li>
+                </ul>
+            </nav>
+          </div>
+        </header>
+        <div class="row">
+          <div class="col-sm-3">  
+          </div>
+          <div class="col-sm-6">
+            <p:messages /> 
+           <div class="panel panel-default paddingTop-0">
+                <div class="panel-body">
+                        <h3><center>JOIN METEOCAL RIGHT NOW</center></h3>
+                        <br/><br/>
+                        <h:form id="signupForm">
+                        <div class="col-sm-8" >
+                            <p:inputText class="col-sm-12 ralewayFontText" id="givenName" placeholder="Full name / Company Name"  value="#{registrationBean.user.name}" required="true" requiredMessage="This is a Mandatory Field">
+                                <p:ajax event="blur" update="errorName" />
+                            </p:inputText><br/><br/>
+                            <p:message id="errorName" for="givenName"></p:message>                
+                            <p:inputText class="col-sm-12 ralewayFontText" id="email" placeholder="email address" value="#{registrationBean.user.email}" required="true" requiredMessage="This is a Mandatory Field" validatorMessage="Insert a correct email">
+                                <f:validateRegex pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"/>
+                                <f:validator validatorId="uniqueEmail"/>
+                                <p:ajax event="blur" update="errorEmail" />
+                            </p:inputText><br/><br/>
+                            <p:message id="errorEmail" for="email"></p:message>
+                            <p:password id="password" class="col-sm-12 ralewayFontText" match="password1" placeholder="Password" value="#{registrationBean.user.password}" required="true" requiredMessage="This is a Mandatory Field">
+                            </p:password><br/><br/>
+                            <p:password id="password1" class="col-sm-12 ralewayFontText"  placeholder="Confirm Password" required="true" requiredMessage="Mandatory Field" >
+                            </p:password><br/><br/>
+                            <h:inputHidden class="col-sm-12 ralewayFontText" id="avatarBase64" value="#{registrationBean.user.avatarString}"/>
+                            <br/>
+                            <p:outputLabel class="col-sm-12 littleFont bold" value="Where do you live?"></p:outputLabel>
+                            <br/>
+                            <p:inputText type="text" id="address" class="col-sm-12 ralewayFontText" placeholder="City" value="#{registrationBean.location.city}" onblur="manageAddress('signupForm','map-canvas','address','','','lat_long')" required="true" requiredMessage="This is a Mandatory Field">
+                                <p:ajax update="address" event="blur" />
+                            </p:inputText>
+                            <h:inputHidden id="lat_long" class="col-sm-12 ralewayFontText" value="#{registrationBean.location.coordinates}"/><br/><br/>
+                            <h:inputHidden id="address_default" value="Milano" />
+                            <h:inputHidden id="lat_long_default" value="(45.4773, 9.1815)" />
+                            <br/>
+                            <div id='map-canvas'></div>
+                            <br/>
+                            <p:commandButton class="col-sm-12 backgroundYellow"  onmouseover="manageAddress('signupForm','map-canvas','address','','','lat_long')" value="Sign up now" update="signupForm" action="#{registrationBean.register}" type="submit"></p:commandButton>
+                            <br/><br/><br/><br/>
+                        </div>
+                        </h:form>
+
+                        <div class="col-sm-4">
+                            <div id="getimage">
+                            </div>
+                            <center>
+                                <button id="openimage" class="ralewayFontText littleFont" type="button">Upload Avatar</button>
+                            </center>
+                            <input id="readimg" type="file" name="imagereader" accept="image/x-png, image/gif, image/jpeg" />
+                            <font color="grey" size="1">(Images with dimension less or equal to 1 MB)</font><br/>
+                        </div>
+                        <div class="col-sm-12">
+                            <p style="color:lightgray"><font size="1" >By signing up, you agree to the <a data-toggle="modal" data-target="#TermsOfService">Terms of Service</a> and <a data-toggle="modal" data-target="#PrivacyPolicy">Privacy Policy</a>, including Cookie Use. Others will be able to find you by email.</font></p>
+                        </div>      
+                        <div class="modal fade" id="TermsOfService" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">Term of Service("Terms")</h4>
+                              </div>
+                              <div class="modal-body">
+                                <p class="ralewayFontText littleFont">Last updated: December 13, 2014</p>
+
+                                <p class="ralewayFontText littleFont">Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the www.meteocal.eu website (the "Service") operated by MeteoCal ("us", "we", or "our").</p>
+
+                                <p class="ralewayFontText littleFont">Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.</p>
+
+                                <p class="ralewayFontText littleFont">By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.</p>
+
+                                <p><strong>Accounts</strong></p>
+
+                                <p class="ralewayFontText littleFont">When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+
+                                <p class="ralewayFontText littleFont">You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service.</p>
+
+                                <p class="ralewayFontText littleFont">You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>    
+
+                                <p><strong>Links To Other Web Sites</strong></p>
+
+                                <p class="ralewayFontText littleFont">Our Service may contain links to third-party web sites or services that are not owned or controlled by MeteoCal.</p>
+
+                                <p class="ralewayFontText littleFont">MeteoCal has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that MeteoCal shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
+
+                                <p class="ralewayFontText littleFont">We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.</p>
+
+                                <p><strong>Termination</strong></p>
+
+                                <p class="ralewayFontText littleFont">We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+
+                                <p class="ralewayFontText littleFont">All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+
+                                <p class="ralewayFontText littleFont">We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+
+                                <p class="ralewayFontText littleFont">Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service.</p>
+
+                                <p class="ralewayFontText littleFont">All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+
+                                <p><strong>Governing Law</strong></p>
+
+                                <p class="ralewayFontText littleFont">These Terms shall be governed and construed in accordance with the laws of Italy, without regard to its conflict of law provisions.</p>
+
+                                <p class="ralewayFontText littleFont">Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service.</p>
+
+                                <p><strong>Changes</strong></p>
+
+                                <p class="ralewayFontText littleFont">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+
+                                <p class="ralewayFontText littleFont">By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.</p>
+
+                                <p class="ralewayFontText littleFont">Created with permission from the TermsFeed.com Terms of Service generator.</p>
+
+                                <p><strong>Contact Us</strong></p>
+
+                                <p class="ralewayFontText littleFont">If you have any questions about these Terms, please contact us.</p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="PrivacyPolicy" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabelP">Privacy Policy</h4>
+                              </div>
+                              <div class="modal-body">
+                                <p class="ralewayFontText littleFont">Last updated: December 13, 2014</p>
+
+                                <p class="ralewayFontText littleFont">MeteoCal ("us", "we", or "our") operates the www.meteocal.eu website (the "Service").</p>
+
+                                <p class="ralewayFontText littleFont">This page informs you of our policies regarding the collection, use and disclosure of Personal Information when you use our Service.</p>
+
+                                <p class="ralewayFontText littleFont">We will not use or share your information with anyone except as described in this Privacy Policy.</p>
+
+                                <p class="ralewayFontText littleFont">We use your Personal Information for providing and improving the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible at www.meteocal.eu</p>
+
+                                <p><strong>Information Collection And Use</strong></p>
+
+                                <p class="ralewayFontText littleFont">While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. Personally identifiable information may include, but is not limited to, your name, postal address and other information ("Personal Information").</p>
+
+                                <p><strong>Log Data</strong></p>
+
+                                <p class="ralewayFontText littleFont">We collect information that your browser sends whenever you visit our Service ("Log Data"). This Log Data may include information such as your computer's Internet Protocol ("IP") address, browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages and other statistics.</p>
+
+                                <p class="ralewayFontText littleFont"><strong>Cookies</strong></p>
+
+                                <p class="ralewayFontText littleFont">Cookies are files with small amount of data, which may include an anonymous unique identifier. Cookies are sent to your browser from a web site and stored on your computer's hard drive.</p>
+
+                                <p class="ralewayFontText littleFont">We use "cookies" to collect information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.</p>
+
+                                <p><strong>Service Providers</strong></p>
+
+                                <p class="ralewayFontText littleFont">We may employ third party companies and individuals to facilitate our Service, to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used.</p>
+
+                                <p class="ralewayFontText littleFont">These third parties have access to your Personal Information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
+
+                                <p class="ralewayFontText littleFont"><strong>Security</strong></p>
+
+                                <p class="ralewayFontText littleFont">The security of your Personal Information is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security.</p>
+
+                                <p><strong>Links To Other Sites</strong></p>
+
+                                <p class="ralewayFontText littleFont">Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.</p>
+
+                                <p class="ralewayFontText littleFont">We have no control over, and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
+
+                                <p class="ralewayFontText littleFont"><strong>Children's Privacy</strong></p>
+
+                                <p class="ralewayFontText littleFont">Our Service does not address anyone under the age of 13 ("Children").</p>
+
+                                <p class="ralewayFontText littleFont">We do not knowingly collect personally identifiable information from children under 13. If you are a parent or guardian and you are aware that your Children has provided us with Personal Information, please contact us. If we discover that a Children under 13 has provided us with Personal Information, we will delete such information from our servers immediately.</p>
+
+                                <p><strong>Changes To This Privacy Policy</strong></p>
+
+                                <p class="ralewayFontText littleFont">We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+
+                                <p class="ralewayFontText littleFont">You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+
+                                <p class="ralewayFontText littleFont">Created with permission from the TermsFeed.com Privacy Policy generator.</p>
+
+                                <p><strong>Contact Us</strong></p>
+
+                                <p class="ralewayFontText littleFont">If you have any questions about this Privacy Policy, please contact us.</p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        
+                        <script src="resources/js/base64Encoding.js"></script>
+                        <script src="resources/js/bootstrap.min.js"></script>
+                </div>
+           </div>              
+          </div>
+        </div>
+    </h:body>
+</html>
+
